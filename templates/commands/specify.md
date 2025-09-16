@@ -1,6 +1,9 @@
 ---
 name: specify
 description: "通过创建规范和功能分支来启动新功能。这是规范驱动开发生命周期的第一步。"
+scripts:
+  sh: scripts/bash/create-new-feature.sh --json "{ARGS}"
+  ps: scripts/powershell/create-new-feature.ps1 -Json "{ARGS}"
 ---
 
 通过创建规范和功能分支来启动新功能。

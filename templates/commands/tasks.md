@@ -1,6 +1,9 @@
 ---
 name: tasks
 description: "将计划分解为可执行任务。这是规范驱动开发生命周期的第三步。"
+scripts:
+  sh: scripts/bash/check-task-prerequisites.sh --json
+  ps: scripts/powershell/check-task-prerequisites.ps1 -Json
 ---
 
 将计划分解为可执行任务。

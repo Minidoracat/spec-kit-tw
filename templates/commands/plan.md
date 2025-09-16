@@ -1,6 +1,9 @@
 ---
 name: plan
 description: "规划如何实现指定功能。这是规范驱动开发生命周期的第二步。"
+scripts:
+  sh: scripts/bash/setup-plan.sh --json
+  ps: scripts/powershell/setup-plan.ps1 -Json
 ---
 
 规划如何实现指定功能。

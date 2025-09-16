@@ -46,15 +46,10 @@ echo "Building release packages for $NEW_VERSION"
 rm -rf sdd-package-base* sdd-*-package-* spec-kit-template-*-${NEW_VERSION}.zip || true
 
 rewrite_paths() {
-
   sed -E \
-
     -e 's@(/?)memory/@.specify/memory/@g' \
-
     -e 's@(/?)scripts/@.specify/scripts/@g' \
-
     -e 's@(/?)templates/@.specify/templates/@g'
-
 }
 
 generate_commands() {

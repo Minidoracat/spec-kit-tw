@@ -1,3 +1,10 @@
+---
+description: "功能开发的实施计划模板"
+scripts:
+  sh: scripts/bash/update-agent-context.sh __AGENT__
+  ps: scripts/powershell/update-agent-context.ps1 -AgentType __AGENT__
+---
+
 # 实施计划：[FEATURE]
 
 **分支**: `[###-feature-name]` | **日期**: [DATE] | **规格**: [link]
