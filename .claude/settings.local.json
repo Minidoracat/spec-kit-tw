@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//Users/linfee/dev/workspace/ai/spec-kit/**)",
+      "Bash(python3:*)",
+      "mcp__tavily__tavily-extract"
+    ],
+    "deny": [],
+    "ask": [],
+    "additionalDirectories": [
+      "/Users/linfee/dev/workspace/ai/spec-kit"
+    ]
+  }
+}
