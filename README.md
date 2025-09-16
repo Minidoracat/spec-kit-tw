@@ -117,9 +117,9 @@ uvx --from git+https://github.com/Linfee/spec-kit-cn.git specify-cn init <PROJEC
 
 | 阶段 | 重点 | 关键活动 |
 |-------|-------|----------------|
-| **0到1开发**（"绿地"） | 从头生成 | <ul><li>从高层需求开始</li><li>生成规范</li><li>规划实施步骤</li><li>构建生产就绪的应用程序</li></ul> |
+| **0到1开发**（"新建项目"） | 从头生成 | <ul><li>从高层需求开始</li><li>生成规范</li><li>规划实施步骤</li><li>构建生产就绪的应用程序</li></ul> |
 | **创意探索** | 并行实现 | <ul><li>探索多样化的解决方案</li><li>支持多种技术栈和架构</li><li>实验UX模式</li></ul> |
-| **迭代增强**（"棕地"） | 棕地现代化 | <ul><li>迭代添加功能</li><li>现代化遗留系统</li><li>适应流程</li></ul> |
+| **迭代增强**（"现有项目改造"） | 现有项目现代化 | <ul><li>迭代添加功能</li><li>现代化遗留系统</li><li>适应流程</li></ul> |
 
 ## 🎯 实验目标
 
@@ -359,7 +359,7 @@ Blazor服务器与拖拽任务板、实时更新。应该创建一个REST API，
 您也可以要求Claude Code（如果您安装了[GitHub CLI](https://docs.github.com/en/github-cli/github-cli)）继续从您当前的分支向 `main` 创建一个详细描述的pull request，以确保工作得到正确跟踪。
 
 >[!NOTE]
->在让代理实施之前，还值得提示Claude Code交叉检查细节，看看是否有任何过度设计的部分（记住——它可能过于急切）。如果存在过度设计的组件或决策，您可以要求Claude Code解决它们。确保Claude Code遵循[宪法](base/memory/constitution.md)作为建立计划时必须遵守的基础。
+>在让代理实施之前，还值得提示Claude Code交叉检查细节，看看是否有任何过度设计的部分（记住——它可能过于急切）。如果存在过度设计的组件或决策，您可以要求Claude Code解决它们。确保Claude Code遵循[项目章程](base/memory/constitution.md)作为建立计划时必须遵守的基础。
 
 ### 步骤5：实施
 

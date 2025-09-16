@@ -3,21 +3,21 @@
 **输入**：来自 `/specs/[###-feature-name]/` 的设计文档
 **前置条件**：plan.md（必需）、research.md、data-model.md、contracts/
 
-## 执行流程（主流程）
+## 主要执行流程
 ```
 1. 从功能目录加载 plan.md
    → 如果未找到：错误 "未找到实施计划"
    → 提取：技术栈、库、结构
 2. 加载可选的设计文档：
    → data-model.md：提取实体 → 模型任务
-   → contracts/：每个文件 → 契约测试任务
+   → contracts/：每个文件 → 合同测试任务
    → research.md：提取决策 → 设置任务
 3. 按类别生成任务：
    → 设置：项目初始化、依赖项、代码规范
-   → 测试：契约测试、集成测试
+   → 测试：合同测试、集成测试
    → 核心：模型、服务、CLI 命令
    → 集成：数据库、中间件、日志
-   → 完善：单元测试、性能、文档
+   → 优化：单元测试、性能、文档
 4. 应用任务规则：
    → 不同文件 = 标记 [P] 表示并行
    → 相同文件 = 顺序执行（无 [P]）
@@ -49,8 +49,8 @@
 
 ## 阶段 3.2：测试优先（TDD）⚠️ 必须在 3.3 之前完成
 **关键：这些测试必须编写，并且在任何实现之前必须失败**
-- [ ] T004 [P] 在 tests/contract/test_users_post.py 中进行 POST /api/users 契约测试
-- [ ] T005 [P] 在 tests/contract/test_users_get.py 中进行 GET /api/users/{id} 契约测试
+- [ ] T004 [P] 在 tests/contract/test_users_post.py 中进行 POST /api/users 合同测试
+- [ ] T005 [P] 在 tests/contract/test_users_get.py 中进行 GET /api/users/{id} 合同测试
 - [ ] T006 [P] 在 tests/integration/test_registration.py 中进行用户注册集成测试
 - [ ] T007 [P] 在 tests/integration/test_auth.py 中进行认证流程集成测试
 
@@ -69,7 +69,7 @@
 - [ ] T017 请求/响应日志记录
 - [ ] T018 CORS 和安全头
 
-## 阶段 3.5：完善
+## 阶段 3.5：优化
 - [ ] T019 [P] 在 tests/unit/test_validation.py 中进行验证单元测试
 - [ ] T020 性能测试（<200ms）
 - [ ] T021 [P] 更新 docs/api.md
@@ -80,13 +80,13 @@
 - 测试（T004-T007）在实现（T008-T014）之前
 - T008 阻塞 T009、T015
 - T016 阻塞 T018
-- 实现在完善之前（T019-T023）
+- 实现在优化之前（T019-T023）
 
 ## 并行示例
 ```
 # 同时启动 T004-T007：
-任务："在 tests/contract/test_users_post.py 中进行 POST /api/users 契约测试"
-任务："在 tests/contract/test_users_get.py 中进行 GET /api/users/{id} 契约测试"
+任务："在 tests/contract/test_users_post.py 中进行 POST /api/users 合同测试"
+任务："在 tests/contract/test_users_get.py 中进行 GET /api/users/{id} 合同测试"
 任务："在 tests/integration/test_registration.py 中进行注册集成测试"
 任务："在 tests/integration/test_auth.py 中进行认证集成测试"
 ```
@@ -101,7 +101,7 @@
 *在 main() 执行期间应用*
 
 1. **从契约生成**：
-   - 每个契约文件 → 契约测试任务 [P]
+   - 每个契约文件 → 合同测试任务 [P]
    - 每个端点 → 实现任务
 
 2. **从数据模型生成**：
@@ -113,7 +113,7 @@
    - 快速启动场景 → 验证任务
 
 4. **排序**：
-   - 设置 → 测试 → 模型 → 服务 → 端点 → 完善
+   - 设置 → 测试 → 模型 → 服务 → 端点 → 优化
    - 依赖关系阻塞并行执行
 
 ## 验证清单
