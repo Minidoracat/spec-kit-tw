@@ -2,13 +2,8 @@
 name: Deploy Documentation to Pages
 
 on:
-  # Runs on pushes targeting the default branch
-  push:
-    branches: ["main"]
-    paths:
-      - 'docs/**'
-
-  # Allows you to run this workflow manually from the Actions tab
+  # Temporarily disabled to avoid GitHub Pages configuration errors
+  # Re-enable when GitHub Pages is properly configured
   workflow_dispatch:
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
