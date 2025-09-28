@@ -246,6 +246,50 @@ build_variant() {
 
       generate_commands cursor md "\$ARGUMENTS" "$base_dir/.cursor/commands" "$script" ;;
 
+    qwen)
+
+      mkdir -p "$base_dir/.qwen/commands"
+
+      generate_commands qwen toml "{{args}}" "$base_dir/.qwen/commands" "$script"
+
+      [[ -f agent_templates/qwen/QWEN.md ]] && cp agent_templates/qwen/QWEN.md "$base_dir/QWEN.md" ;;
+
+    opencode)
+
+      mkdir -p "$base_dir/.opencode/command"
+
+      generate_commands opencode md "\$ARGUMENTS" "$base_dir/.opencode/command" "$script" ;;
+
+    windsurf)
+
+      mkdir -p "$base_dir/.windsurf/workflows"
+
+      generate_commands windsurf md "\$ARGUMENTS" "$base_dir/.windsurf/workflows" "$script" ;;
+
+    codex)
+
+      mkdir -p "$base_dir/.codex/prompts"
+
+      generate_commands codex md "\$ARGUMENTS" "$base_dir/.codex/prompts" "$script" ;;
+
+    kilocode)
+
+      mkdir -p "$base_dir/.kilocode/workflows"
+
+      generate_commands kilocode md "\$ARGUMENTS" "$base_dir/.kilocode/workflows" "$script" ;;
+
+    auggie)
+
+      mkdir -p "$base_dir/.augment/commands"
+
+      generate_commands auggie md "\$ARGUMENTS" "$base_dir/.augment/commands" "$script" ;;
+
+    roo)
+
+      mkdir -p "$base_dir/.roo/commands"
+
+      generate_commands roo md "\$ARGUMENTS" "$base_dir/.roo/commands" "$script" ;;
+
   esac
 
   ( cd "$base_dir" && zip -r "../spec-kit-template-${agent}-${script}-${NEW_VERSION}.zip" . )
@@ -256,7 +300,7 @@ build_variant() {
 
 # Determine agent list
 
-ALL_AGENTS=(claude gemini copilot cursor)
+ALL_AGENTS=(claude gemini copilot cursor qwen opencode windsurf codex kilocode auggie roo)
 
 ALL_SCRIPTS=(sh ps)
 

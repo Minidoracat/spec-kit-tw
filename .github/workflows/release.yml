@@ -87,7 +87,7 @@ jobs:
         cat > release_notes.md << EOF
         Template release ${{ steps.get_tag.outputs.new_version }}
 
-        Updated specification-driven development templates for GitHub Copilot, Claude Code, Gemini CLI, and Cursor.
+        Updated specification-driven development templates for multiple AI assistants including GitHub Copilot, Claude Code, Gemini CLI, Cursor, Qwen, OpenCode, Windsurf, Codex, Kilocode, Auggie, and Roo.
 
         Download the template for your preferred AI assistant and script type:
         - spec-kit-template-copilot-sh-${{ steps.get_tag.outputs.new_version }}.zip
@@ -98,6 +98,20 @@ jobs:
         - spec-kit-template-gemini-ps-${{ steps.get_tag.outputs.new_version }}.zip
         - spec-kit-template-cursor-sh-${{ steps.get_tag.outputs.new_version }}.zip
         - spec-kit-template-cursor-ps-${{ steps.get_tag.outputs.new_version }}.zip
+        - spec-kit-template-qwen-sh-${{ steps.get_tag.outputs.new_version }}.zip
+        - spec-kit-template-qwen-ps-${{ steps.get_tag.outputs.new_version }}.zip
+        - spec-kit-template-opencode-sh-${{ steps.get_tag.outputs.new_version }}.zip
+        - spec-kit-template-opencode-ps-${{ steps.get_tag.outputs.new_version }}.zip
+        - spec-kit-template-windsurf-sh-${{ steps.get_tag.outputs.new_version }}.zip
+        - spec-kit-template-windsurf-ps-${{ steps.get_tag.outputs.new_version }}.zip
+        - spec-kit-template-codex-sh-${{ steps.get_tag.outputs.new_version }}.zip
+        - spec-kit-template-codex-ps-${{ steps.get_tag.outputs.new_version }}.zip
+        - spec-kit-template-kilocode-sh-${{ steps.get_tag.outputs.new_version }}.zip
+        - spec-kit-template-kilocode-ps-${{ steps.get_tag.outputs.new_version }}.zip
+        - spec-kit-template-auggie-sh-${{ steps.get_tag.outputs.new_version }}.zip
+        - spec-kit-template-auggie-ps-${{ steps.get_tag.outputs.new_version }}.zip
+        - spec-kit-template-roo-sh-${{ steps.get_tag.outputs.new_version }}.zip
+        - spec-kit-template-roo-ps-${{ steps.get_tag.outputs.new_version }}.zip
         EOF
         
         echo "Generated release notes:"
@@ -119,6 +133,20 @@ jobs:
           spec-kit-template-gemini-ps-${{ steps.get_tag.outputs.new_version }}.zip \
           spec-kit-template-cursor-sh-${{ steps.get_tag.outputs.new_version }}.zip \
           spec-kit-template-cursor-ps-${{ steps.get_tag.outputs.new_version }}.zip \
+          spec-kit-template-qwen-sh-${{ steps.get_tag.outputs.new_version }}.zip \
+          spec-kit-template-qwen-ps-${{ steps.get_tag.outputs.new_version }}.zip \
+          spec-kit-template-opencode-sh-${{ steps.get_tag.outputs.new_version }}.zip \
+          spec-kit-template-opencode-ps-${{ steps.get_tag.outputs.new_version }}.zip \
+          spec-kit-template-windsurf-sh-${{ steps.get_tag.outputs.new_version }}.zip \
+          spec-kit-template-windsurf-ps-${{ steps.get_tag.outputs.new_version }}.zip \
+          spec-kit-template-codex-sh-${{ steps.get_tag.outputs.new_version }}.zip \
+          spec-kit-template-codex-ps-${{ steps.get_tag.outputs.new_version }}.zip \
+          spec-kit-template-kilocode-sh-${{ steps.get_tag.outputs.new_version }}.zip \
+          spec-kit-template-kilocode-ps-${{ steps.get_tag.outputs.new_version }}.zip \
+          spec-kit-template-auggie-sh-${{ steps.get_tag.outputs.new_version }}.zip \
+          spec-kit-template-auggie-ps-${{ steps.get_tag.outputs.new_version }}.zip \
+          spec-kit-template-roo-sh-${{ steps.get_tag.outputs.new_version }}.zip \
+          spec-kit-template-roo-ps-${{ steps.get_tag.outputs.new_version }}.zip \
           --title "Spec Kit Templates - $VERSION_NO_V" \
           --notes-file release_notes.md
       env:
