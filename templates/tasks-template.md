@@ -10,11 +10,11 @@
    → 提取：技术栈、库、结构
 2. 加载可选的设计文档：
    → data-model.md：提取实体 → 模型任务
-   → contracts/：每个文件 → 合同测试任务
+   → contracts/：每个文件 → 契约测试任务
    → research.md：提取决策 → 设置任务
 3. 按类别生成任务：
    → 设置：项目初始化、依赖项、代码规范
-   → 测试：合同测试、集成测试
+   → 测试：契约测试、集成测试
    → 核心：模型、服务、CLI 命令
    → 集成：数据库、中间件、日志
    → 优化：单元测试、性能、文档
@@ -49,8 +49,8 @@
 
 ## 阶段 3.2：测试优先（TDD）⚠️ 必须在 3.3 之前完成
 **关键：这些测试必须编写，并且在任何实现之前必须失败**
-- [ ] T004 [P] 在 tests/contract/test_users_post.py 中进行 POST /api/users 合同测试
-- [ ] T005 [P] 在 tests/contract/test_users_get.py 中进行 GET /api/users/{id} 合同测试
+- [ ] T004 [P] 在 tests/contract/test_users_post.py 中进行 POST /api/users 契约测试
+- [ ] T005 [P] 在 tests/contract/test_users_get.py 中进行 GET /api/users/{id} 契约测试
 - [ ] T006 [P] 在 tests/integration/test_registration.py 中进行用户注册集成测试
 - [ ] T007 [P] 在 tests/integration/test_auth.py 中进行认证流程集成测试
 
@@ -85,8 +85,8 @@
 ## 并行示例
 ```
 # 同时启动 T004-T007：
-任务："在 tests/contract/test_users_post.py 中进行 POST /api/users 合同测试"
-任务："在 tests/contract/test_users_get.py 中进行 GET /api/users/{id} 合同测试"
+任务："在 tests/contract/test_users_post.py 中进行 POST /api/users 契约测试"
+任务："在 tests/contract/test_users_get.py 中进行 GET /api/users/{id} 契约测试"
 任务："在 tests/integration/test_registration.py 中进行注册集成测试"
 任务："在 tests/integration/test_auth.py 中进行认证集成测试"
 ```
@@ -101,7 +101,7 @@
 *在 main() 执行期间应用*
 
 1. **从契约生成**：
-   - 每个契约文件 → 合同测试任务 [P]
+   - 每个契约文件 → 契约测试任务 [P]
    - 每个端点 → 实现任务
 
 2. **从数据模型生成**：
@@ -117,7 +117,7 @@
    - 依赖关系阻塞并行执行
 
 ## 验证清单
-*关卡：由 main() 在返回前检查*
+*门控：由 main() 在返回前检查*
 
 - [ ] 所有契约都有对应的测试
 - [ ] 所有实体都有模型任务
