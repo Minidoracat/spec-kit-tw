@@ -182,7 +182,7 @@ uvx --from git+https://github.com/Linfee/spec-kit-cn.git specify-cn init <PROJEC
 | [Kilo Code](https://github.com/Kilo-Org/kilocode)         | ✅    |                                                                                    |
 | [Auggie CLI](https://docs.augmentcode.com/cli/overview)   | ✅    |                                                                                    |
 | [Roo Code](https://roocode.com/)                          | ✅    |                                                                                    |
-| [Codex CLI](https://github.com/openai/codex)              | ✅    | Codex \[支持\]|✅    | Codex \[支持\](https://github.com/openai/codex/issues/2890) 斜杠命令的自定义参数。 |
+| [Codex CLI](https://github.com/openai/codex)              | ⚠️    | Codex [不支持](https://github.com/openai/codex/issues/2890) 斜杠命令的自定义参数。 |
 
 ## 🔧 Specify CN CLI 参考
 
@@ -350,11 +350,22 @@ specify-cn init --here
 specify-cn init <project_name> --ai claude
 specify-cn init <project_name> --ai gemini
 specify-cn init <project_name> --ai copilot
+specify-cn init <project_name> --ai cursor
+specify-cn init <project_name> --ai qwen
+specify-cn init <project_name> --ai opencode
+specify-cn init <project_name> --ai codex
+specify-cn init <project_name> --ai windsurf
+specify-cn init <project_name> --ai kilocode
+specify-cn init <project_name> --ai auggie
+specify-cn init <project_name> --ai roo
 # 或在当前目录：
 specify-cn init --here --ai claude
+specify-cn init --here --ai codex
+# 强制合并到非空的当前目录
+specify-cn init --here --force --ai claude
 ```
 
-CLI会检查您是否安装了Claude Code或Gemini CLI。如果您没有安装，或者您希望在不检查正确工具的情况下获取模板，请在命令中使用 `--ignore-agent-tools`：
+CLI会检查您是否安装了Claude Code、Gemini CLI、Cursor CLI、Qwen CLI、opencode或Codex CLI。如果您没有安装，或者您希望在不检查正确工具的情况下获取模板，请在命令中使用 `--ignore-agent-tools`：
 
 ```bash
 specify-cn init <project_name> --ai claude --ignore-agent-tools
