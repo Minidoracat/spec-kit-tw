@@ -5,6 +5,35 @@
 格式基于[Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 并且本项目遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.0.55] - 2025-10-02
+
+### 同步原版
+- 同步原版 [v0.0.55](https://github.com/github/spec-kit/releases/tag/v0.0.55)
+- 对应原版提交：`e3b456c` (包含13个功能增强和bug修复提交)
+- 主要提交：
+  - `68eba52` - feat: support 'specify init .' for current directory initialization
+  - `721ecc9` - feat: Add emacs-style up/down keys
+  - `6a3e81f` - docs: fix the paths of generated files (moved under a `.specify/` folder)
+  - `b2f749e` - fix: add UTF-8 encoding to file read/write operations in update-agent-context.ps1
+  - `cc75a22` - Update URLs to Contributing and Support Guides in Docs
+
+### 新增功能
+- **新增 `specify init .` 支持**：可以使用 `.` 作为当前目录初始化的简写，等同于 `--here` 标志但更直观
+- **Emacs 风格快捷键**：添加 Ctrl+P (上) 和 Ctrl+N (下) 键盘支持
+- **项目文件结构更新**：生成的文件现在统一放在 `.specify/` 目录下
+
+### 修复
+- **UTF-8 编码支持**：修复 PowerShell 脚本中的文件读写编码问题
+- **文档链接修正**：更新贡献指南和支持指南的链接地址
+
+### 中文本地化更新
+- 更新 README.md 中的命令行参数说明和示例
+- 完善所有新增功能的使用示例和中文说明
+- 更新项目结构描述，反映 `.specify/` 目录变更
+
+### 已知问题
+- 无
+
 ## [未发布]
 
 ### 新增

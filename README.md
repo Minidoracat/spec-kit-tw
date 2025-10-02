@@ -12,12 +12,12 @@
 
 [![Release](https://github.com/Linfee/spec-kit-cn/actions/workflows/release.yml/badge.svg)](https://github.com/Linfee/spec-kit-cn/actions/workflows/release.yml)
 [![GitHub Repo](https://img.shields.io/badge/GitHub-spec--kit--cn-blue?logo=github)](https://github.com/Linfee/spec-kit-cn.git)
-[![Current Version](https://img.shields.io/badge/version-0.0.54-green)](https://github.com/Linfee/spec-kit-cn/releases)
+[![Current Version](https://img.shields.io/badge/version-0.0.55-green)](https://github.com/Linfee/spec-kit-cn/releases)
 
 </div>
 
 > **💡 这是 [GitHub Spec Kit](https://github.com/github/spec-kit) 的官方中文复刻版本**
-> **🔄 对应原版提交**: [`1c0e7d14d5d5388fbb98b7856ce9f486cc273997`](https://github.com/github/spec-kit/commit/1c0e7d14d5d5388fbb98b7856ce9f486cc273997)
+> **🔄 对应原版提交**: [`e3b456c4c88be456ab190b3bebdb1e97c94fa6db`](https://github.com/github/spec-kit/commit/e3b456c4c88be456ab190b3bebdb1e97c94fa6db)
 > **📦 包名**: `specify-cn-cli` | **🛠️ 命令**: `specify-cn`
 
 > **⚠️ 保持同步**: 本项目将定期与原版保持同步，确保中文用户能够享受最新的功能和改进。
@@ -199,13 +199,13 @@ uvx --from git+https://github.com/Linfee/spec-kit-cn.git specify-cn init <PROJEC
 
 | 参数/选项              | 类型 | 描述                                                                                                                             |
 | ---------------------- | ---- | -------------------------------------------------------------------------------------------------------------------------------- |
-| `<project-name>`       | 参数 | 新项目目录的名称（使用 `--here` 时可选）                                                                                         |
+| `<project-name>`       | 参数 | 新项目目录的名称（使用 `--here` 时可选，或使用 `.` 表示当前目录）                                                                                         |
 | `--ai`                 | 选项 | 要使用的AI助手：`claude`, `gemini`, `copilot`, `cursor`, `qwen`, `opencode`, `codex`, `windsurf`, `kilocode`, `auggie`, 或 `roo` |
 | `--script`             | 选项 | 要使用的脚本变体：`sh` (bash/zsh) 或 `ps` (PowerShell)                                                                           |
 | `--ignore-agent-tools` | 标志 | 跳过AI代理工具的检查，如 Claude Code                                                                                             |
 | `--no-git`             | 标志 | 跳过 git 仓库初始化                                                                                                              |
 | `--here`               | 标志 | 在当前目录初始化项目，而不是创建新目录                                                                                           |
-| `--force`              | 标志 | 在非空目录中使用 `--here` 时强制合并/覆盖（跳过确认）                                                                            |
+| `--force`              | 标志 | 在当前目录中初始化时强制合并/覆盖（跳过确认）                                                                                    |
 | `--skip-tls`           | 标志 | 跳过 SSL/TLS 验证（不推荐）                                                                                                      |
 | `--debug`              | 标志 | 启用详细调试输出以进行故障排除                                                                                                   |
 | `--github-token`       | 选项 | API 请求的 GitHub 令牌（或设置 GH_TOKEN/GITHUB_TOKEN 环境变量）                                                                  |
@@ -229,9 +229,13 @@ specify-cn init my-project --ai windsurf
 specify-cn init my-project --ai copilot --script ps
 
 # 在当前目录初始化
+specify-cn init . --ai copilot
+# 或使用 --here 标志
 specify-cn init --here --ai copilot
 
 # 强制合并到当前（非空）目录而无需确认
+specify-cn init . --force --ai copilot
+# 或
 specify-cn init --here --force --ai copilot
 
 # 跳过 git 初始化
@@ -339,7 +343,13 @@ specify-cn init <project_name>
 或在当前目录初始化：
 
 ```bash
+specify-cn init .
+# 或使用 --here 标志
 specify-cn init --here
+# 跳过确认当目录已有文件时
+specify-cn init . --force
+# 或
+specify-cn init --here --force
 ```
 
 ![Specify CN CLI在终端中引导新项目](./media/specify_cli.gif)
@@ -385,7 +395,7 @@ specify-cn init <project_name> --ai claude --ignore-agent-tools
 /constitution 创建专注于代码质量、测试标准、用户体验一致性和性能要求的原则。包括这些原则应如何指导技术决策和实施选择的治理。
 ```
 
-此步骤会创建或更新 `/memory/constitution.md` 文件，其中包含项目的基础指南，AI代理将在规范、规划和实施阶段参考这些指南。
+此步骤会创建或更新 `.specify/memory/constitution.md` 文件，其中包含项目的基础指南，AI代理将在规范、规划和实施阶段参考这些指南。
 
 >[!IMPORTANT]
 >尽可能明确地说明您要构建的_什么_和_为什么_。**此时不要关注技术栈**。
@@ -420,23 +430,24 @@ specify-cn init <project_name> --ai claude --ignore-agent-tools
 在此阶段，您的项目文件夹内容应类似于以下内容：
 
 ```text
-├── memory
-│	 └── constitution.md
-├── scripts
-│	 ├── check-task-prerequisites.sh
-│	 ├── common.sh
-│	 ├── create-new-feature.sh
-│	 ├── get-feature-paths.sh
-│	 ├── setup-plan.sh
-│	 └── update-claude-md.sh
-├── specs
-│	 └── 001-create-taskify
-│	     └── spec.md
-└── templates
-    ├── CLAUDE-template.md
-    ├── plan-template.md
-    ├── spec-template.md
-    └── tasks-template.md
+└── .specify
+    ├── memory
+    │	 └── constitution.md
+    ├── scripts
+    │	 ├── check-task-prerequisites.sh
+    │	 ├── common.sh
+    │	 ├── create-new-feature.sh
+    │	 ├── get-feature-paths.sh
+    │	 ├── setup-plan.sh
+    │	 └── update-claude-md.sh
+    ├── specs
+    │	 └── 001-create-taskify
+    │	     └── spec.md
+    └── templates
+        ├── CLAUDE-template.md
+        ├── plan-template.md
+        ├── spec-template.md
+        └── tasks-template.md
 ```
 
 ### **步骤2：** 创建项目规范

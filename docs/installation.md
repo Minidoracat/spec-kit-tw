@@ -21,6 +21,8 @@ uvx --from git+https://github.com/Linfee/spec-kit-cn.git specify-cn init <PROJEC
 或者在当前目录中初始化：
 
 ```bash
+uvx --from git+https://github.com/Linfee/spec-kit-cn.git specify-cn init .
+# 或使用 --here 标志
 uvx --from git+https://github.com/Linfee/spec-kit-cn.git specify-cn init --here
 ```
 

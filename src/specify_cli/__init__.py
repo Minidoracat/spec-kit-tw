@@ -192,9 +192,9 @@ def get_key():
     key = readchar.readkey()
     
     # Arrow keys
-    if key == readchar.key.UP:
+    if key == readchar.key.UP or key == readchar.key.CTRL_P:
         return 'up'
-    if key == readchar.key.DOWN:
+    if key == readchar.key.DOWN or key == readchar.key.CTRL_N:
         return 'down'
     
     # Enter/Return
@@ -747,7 +747,7 @@ def ensure_executable_scripts(project_path: Path, tracker: StepTracker | None = 
 
 @app.command()
 def init(
-    project_name: str = typer.Argument(None, help="Name for your new project directory (optional if using --here)"),
+    project_name: str = typer.Argument(None, help="Name for your new project directory (optional if using --here, or use '.' for current directory)"),
     ai_assistant: str = typer.Option(None, "--ai", help="AI assistant to use: claude, gemini, copilot, cursor, qwen, opencode, codex, windsurf, kilocode, or auggie"),
     script_type: str = typer.Option(None, "--script", help="Script type to use: sh or ps"),
     ignore_agent_tools: bool = typer.Option(False, "--ignore-agent-tools", help="Skip checks for AI agent tools like Claude Code"),
@@ -781,21 +781,28 @@ def init(
         specify init my-project --ai windsurf
         specify init my-project --ai auggie
         specify init --ignore-agent-tools my-project
-        specify init --here --ai claude
+        specify init . --ai claude         # Initialize in current directory
+        specify init .                     # Initialize in current directory (interactive AI selection)
+        specify init --here --ai claude    # Alternative syntax for current directory
         specify init --here --ai codex
         specify init --here
         specify init --here --force  # Skip confirmation when current directory not empty
     """
     # Show banner first
     show_banner()
-    
+
+    # Handle '.' as shorthand for current directory (equivalent to --here)
+    if project_name == ".":
+        here = True
+        project_name = None  # Clear project_name to use existing validation logic
+
     # Validate arguments
     if here and project_name:
         console.print("[red]错误：[/red] 不能同时指定项目名称和 --here 标志")
         raise typer.Exit(1)
     
     if not here and not project_name:
-        console.print("[red]错误：[/red] 必须指定项目名称或使用 --here 标志")
+        console.print("[red]错误：[/red] 必须指定项目名称、使用 '.' 表示当前目录，或使用 --here 标志")
         raise typer.Exit(1)
     
     # Determine project directory
@@ -1070,10 +1077,10 @@ def init(
     console.print(steps_panel)
 
     enhancement_lines = [
-        "可用于规范的可选命令（提高质量和信心）",
+        "可用于规范的可选命令 [bright_black]（提高质量和信心）[/bright_black]",
         "",
-        f"○ [cyan]/clarify[/] （可选） - 在规划前提出结构化问题以降低模糊区域的风险（如果使用则在 [cyan]/plan[/] 前运行）",
-        f"○ [cyan]/analyze[/] （可选） - 跨工件一致性和对齐报告（在 [cyan]/tasks[/] 后，[cyan]/implement[/] 前）"
+        f"○ [cyan]/clarify[/] [bright_black]（可选）[/bright_black] - 在规划前提出结构化问题以降低模糊区域的风险（如果使用则在 [cyan]/plan[/] 前运行）",
+        f"○ [cyan]/analyze[/] [bright_black]（可选）[/bright_black] - 跨工件一致性和对齐报告（在 [cyan]/tasks[/] 后，[cyan]/implement[/] 前）"
     ]
     enhancements_panel = Panel("\n".join(enhancement_lines), title="增强命令", border_style="cyan", padding=(1,2))
     console.print()
