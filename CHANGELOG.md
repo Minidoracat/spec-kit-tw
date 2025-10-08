@@ -5,6 +5,35 @@
 格式基於 [Keep a Changelog](https://keepachangelog.com/zh-TW/1.0.0/)，
 並且本專案遵循[語義化版本](https://semver.org/lang/zh-TW/)。
 
+## [0.0.58] - 2025-10-09
+
+### 同步原版
+- 同步原版 [v0.0.58](https://github.com/github/spec-kit/releases/tag/v0.0.58)
+- 對應原版提交：[89f4b0b](https://github.com/github/spec-kit/commit/89f4b0b38a42996376c0f083d47281a4c9196761)
+
+### 新增功能（v0.0.58）
+- **Amazon Q Developer CLI 支援**：
+  - 新增 Amazon Q Developer CLI 作為可選 AI 助手
+  - 在 `AI_CHOICES` 中新增 `"q": "Amazon Q Developer CLI"`
+  - 新增 Amazon Q 工具檢查邏輯和安裝指引
+  - 在 `check()` 命令中新增 Amazon Q 檢查項目
+  - 更新 `agent_folder_map` 包含 `.amazonq/` 目錄
+  - 更新命令說明文字包含 Amazon Q 選項
+
+- **命令模板引號轉義指引**：
+  - 在所有命令模板中新增引號轉義使用說明
+  - 影響檔案：analyze.md, checklist.md, clarify.md, implement.md, plan.md, specify.md, tasks.md
+  - 指引內容：「對於參數中包含單引號的情況（如 "I'm Groot"），請使用轉義語法：例如 'I'\''m Groot'（或者如果可能，使用雙引號："I'm Groot"）」
+
+### 翻譯改進
+- **術語統一**：
+  - 將 `memory/constitution.md` 中的「套件」統一修正為「函式庫」
+  - 更準確地反映 Library 的技術含義
+  - 影響 5 處範例註解
+
+### 已知問題
+- 無
+
 ## [0.0.57] - 2025-01-09
 
 ### 同步原版

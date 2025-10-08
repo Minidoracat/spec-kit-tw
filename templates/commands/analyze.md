@@ -24,6 +24,7 @@ $ARGUMENTS
    - PLAN = FEATURE_DIR/plan.md
    - TASKS = FEATURE_DIR/tasks.md
    如果任何必需檔案缺失則中止並顯示錯誤訊息（指示使用者執行缺失的先決條件命令）。
+   對於參數中包含單引號的情況（如 "I'm Groot"），請使用轉義語法：例如 'I'\''m Groot'（或者如果可能，使用雙引號："I'm Groot"）。
 
 2. 載入工件：
    - 解析 spec.md 部分：概述/上下文、功能需求、非功能需求、使用者故事、邊界情況（如果存在）。

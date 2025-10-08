@@ -75,6 +75,7 @@ AI_CHOICES = {
     "kilocode": "Kilo Code",
     "auggie": "Auggie CLI",
     "roo": "Roo Code",
+    "q": "Amazon Q Developer CLI",
 }
 # Add script type choices
 SCRIPT_TYPE_CHOICES = {"sh": "POSIX Shell (bash/zsh)", "ps": "PowerShell"}
@@ -244,7 +245,7 @@ def select_with_arrows(options: dict, prompt_text: str = "Select an option", def
                 table.add_row("▶", f"[cyan]{key}[/cyan] [dim]({options[key]})[/dim]")
             else:
                 table.add_row(" ", f"[cyan]{key}[/cyan] [dim]({options[key]})[/dim]")
-        
+
         table.add_row("", "")
         table.add_row("", "[dim]使用 ↑/↓ 導航，Enter 選擇，Esc 取消[/dim]")
         
@@ -305,7 +306,7 @@ class BannerGroup(TyperGroup):
 
 app = typer.Typer(
     name="specify-tw",
-    help="Setup tool for Specify spec-driven development projects",
+    help="Specify 規範驅動開發專案設置工具",
     add_completion=False,
     invoke_without_command=True,
     cls=BannerGroup,
@@ -335,7 +336,7 @@ def callback(ctx: typer.Context):
     # (help is handled by BannerGroup)
     if ctx.invoked_subcommand is None and "--help" not in sys.argv and "-h" not in sys.argv:
         show_banner()
-        console.print(Align.center("[dim]Run 'specify-tw --help' for usage information[/dim]"))
+        console.print(Align.center("[dim]執行 'specify-tw --help' 查看使用資訊[/dim]"))
         console.print()
 
 
@@ -361,10 +362,10 @@ def run_command(cmd: list[str], check_return: bool = True, capture: bool = False
 def check_tool_for_tracker(tool: str, tracker: StepTracker) -> bool:
     """Check if a tool is installed and update tracker."""
     if shutil.which(tool):
-        tracker.complete(tool, "available")
+        tracker.complete(tool, "可用")
         return True
     else:
-        tracker.error(tool, "not found")
+        tracker.error(tool, "未找到")
         return False
 
 
@@ -516,7 +517,7 @@ def download_template_from_github(ai_assistant: str, download_dir: Path, *, scri
                             TextColumn("[progress.percentage]{task.percentage:>3.0f}%"),
                             console=console,
                         ) as progress:
-                            task = progress.add_task("Downloading...", total=total_size)
+                            task = progress.add_task("下載中...", total=total_size)
                             downloaded = 0
                             for chunk in response.iter_bytes(chunk_size=8192):
                                 f.write(chunk)
@@ -565,18 +566,18 @@ def download_and_extract_template(project_path: Path, ai_assistant: str, script_
         )
         if tracker:
             tracker.complete("fetch", f"release {meta['release']} ({meta['size']:,} bytes)")
-            tracker.add("download", "Download template")
+            tracker.add("download", "下載模板")
             tracker.complete("download", meta['filename'])
     except Exception as e:
         if tracker:
             tracker.error("fetch", str(e))
         else:
             if verbose:
-                console.print(f"[red]Error downloading template:[/red] {e}")
+                console.print(f"[red]下載模板錯誤：[/red] {e}")
         raise
     
     if tracker:
-        tracker.add("extract", "Extract template")
+        tracker.add("extract", "解壓模板")
         tracker.start("extract")
     elif verbose:
         console.print("正在解壓模板...")
@@ -591,7 +592,7 @@ def download_and_extract_template(project_path: Path, ai_assistant: str, script_
             zip_contents = zip_ref.namelist()
             if tracker:
                 tracker.start("zip-list")
-                tracker.complete("zip-list", f"{len(zip_contents)} entries")
+                tracker.complete("zip-list", f"{len(zip_contents)} 個項目")
             elif verbose:
                 console.print(f"[cyan]ZIP 包含 {len(zip_contents)} 個項目[/cyan]")
             
@@ -605,7 +606,7 @@ def download_and_extract_template(project_path: Path, ai_assistant: str, script_
                     extracted_items = list(temp_path.iterdir())
                     if tracker:
                         tracker.start("extracted-summary")
-                        tracker.complete("extracted-summary", f"temp {len(extracted_items)} items")
+                        tracker.complete("extracted-summary", f"暫存 {len(extracted_items)} 個項目")
                     elif verbose:
                         console.print(f"[cyan]已解壓 {len(extracted_items)} 個項目到暫存位置[/cyan]")
                     
@@ -614,7 +615,7 @@ def download_and_extract_template(project_path: Path, ai_assistant: str, script_
                     if len(extracted_items) == 1 and extracted_items[0].is_dir():
                         source_dir = extracted_items[0]
                         if tracker:
-                            tracker.add("flatten", "Flatten nested directory")
+                            tracker.add("flatten", "扁平化巢狀目錄")
                             tracker.complete("flatten")
                         elif verbose:
                             console.print(f"[cyan]發現巢狀目錄結構[/cyan]")
@@ -649,7 +650,7 @@ def download_and_extract_template(project_path: Path, ai_assistant: str, script_
                 extracted_items = list(project_path.iterdir())
                 if tracker:
                     tracker.start("extracted-summary")
-                    tracker.complete("extracted-summary", f"{len(extracted_items)} top-level items")
+                    tracker.complete("extracted-summary", f"{len(extracted_items)} 個頂層項目")
                 elif verbose:
                     console.print(f"[cyan]已解壓 {len(extracted_items)} 個項目到 {project_path}：[/cyan]")
                     for item in extracted_items:
@@ -667,7 +668,7 @@ def download_and_extract_template(project_path: Path, ai_assistant: str, script_
                     # Rename temp directory to project directory
                     shutil.move(str(temp_move_dir), str(project_path))
                     if tracker:
-                        tracker.add("flatten", "Flatten nested directory")
+                        tracker.add("flatten", "扁平化巢狀目錄")
                         tracker.complete("flatten")
                     elif verbose:
                         console.print(f"[cyan]已扁平化巢狀目錄結構[/cyan]")
@@ -689,7 +690,7 @@ def download_and_extract_template(project_path: Path, ai_assistant: str, script_
             tracker.complete("extract")
     finally:
         if tracker:
-            tracker.add("cleanup", "Remove temporary archive")
+            tracker.add("cleanup", "移除暫存檔案")
         # Clean up downloaded ZIP file
         if zip_path.exists():
             zip_path.unlink()
@@ -734,8 +735,8 @@ def ensure_executable_scripts(project_path: Path, tracker: StepTracker | None = 
         except Exception as e:
             failures.append(f"{script.relative_to(scripts_root)}: {e}")
     if tracker:
-        detail = f"{updated} updated" + (f", {len(failures)} failed" if failures else "")
-        tracker.add("chmod", "Set script permissions recursively")
+        detail = f"{updated} 已更新" + (f", {len(failures)} 失敗" if failures else "")
+        tracker.add("chmod", "遞迴設定腳本權限")
         (tracker.error if failures else tracker.complete)("chmod", detail)
     else:
         if updated:
@@ -747,46 +748,46 @@ def ensure_executable_scripts(project_path: Path, tracker: StepTracker | None = 
 
 @app.command()
 def init(
-    project_name: str = typer.Argument(None, help="Name for your new project directory (optional if using --here, or use '.' for current directory)"),
-    ai_assistant: str = typer.Option(None, "--ai", help="AI assistant to use: claude, gemini, copilot, cursor, qwen, opencode, codex, windsurf, kilocode, or auggie"),
-    script_type: str = typer.Option(None, "--script", help="Script type to use: sh or ps"),
-    ignore_agent_tools: bool = typer.Option(False, "--ignore-agent-tools", help="Skip checks for AI agent tools like Claude Code"),
-    no_git: bool = typer.Option(False, "--no-git", help="Skip git repository initialization"),
-    here: bool = typer.Option(False, "--here", help="Initialize project in the current directory instead of creating a new one"),
-    force: bool = typer.Option(False, "--force", help="Force merge/overwrite when using --here (skip confirmation)"),
-    skip_tls: bool = typer.Option(False, "--skip-tls", help="Skip SSL/TLS verification (not recommended)"),
-    debug: bool = typer.Option(False, "--debug", help="Show verbose diagnostic output for network and extraction failures"),
-    github_token: str = typer.Option(None, "--github-token", help="GitHub token to use for API requests (or set GH_TOKEN or GITHUB_TOKEN environment variable)"),
+    project_name: str = typer.Argument(None, help="新專案目錄名稱（使用 --here 時可選，或使用 '.' 表示目前目錄）"),
+    ai_assistant: str = typer.Option(None, "--ai", help="使用的 AI 助手：claude, gemini, copilot, cursor, qwen, opencode, codex, windsurf, kilocode, auggie, 或 q"),
+    script_type: str = typer.Option(None, "--script", help="使用的腳本類型：sh 或 ps"),
+    ignore_agent_tools: bool = typer.Option(False, "--ignore-agent-tools", help="跳過 AI 代理工具檢查（如 Claude Code）"),
+    no_git: bool = typer.Option(False, "--no-git", help="跳過 git 儲存庫初始化"),
+    here: bool = typer.Option(False, "--here", help="在目前目錄初始化專案，而非建立新目錄"),
+    force: bool = typer.Option(False, "--force", help="使用 --here 時強制合併/覆蓋（跳過確認）"),
+    skip_tls: bool = typer.Option(False, "--skip-tls", help="跳過 SSL/TLS 驗證（不建議）"),
+    debug: bool = typer.Option(False, "--debug", help="顯示網路和解壓失敗的詳細診斷輸出"),
+    github_token: str = typer.Option(None, "--github-token", help="用於 API 請求的 GitHub token（或設定 GH_TOKEN 或 GITHUB_TOKEN 環境變數）"),
 ):
     """
-    Initialize a new Specify project from the latest template.
-    
-    This command will:
-    1. Check that required tools are installed (git is optional)
-    2. Let you choose your AI assistant (Claude Code, Gemini CLI, GitHub Copilot, Cursor, Qwen Code, opencode, Codex CLI, Windsurf, Kilo Code, or Auggie CLI)
-    3. Download the appropriate template from GitHub
-    4. Extract the template to a new project directory or current directory
-    5. Initialize a fresh git repository (if not --no-git and no existing repo)
-    6. Optionally set up AI assistant commands
-    
-    Examples:
-        specify init my-project
-        specify init my-project --ai claude
-        specify init my-project --ai gemini
-        specify init my-project --ai copilot --no-git
-        specify init my-project --ai cursor
-        specify init my-project --ai qwen
-        specify init my-project --ai opencode
-        specify init my-project --ai codex
-        specify init my-project --ai windsurf
-        specify init my-project --ai auggie
-        specify init --ignore-agent-tools my-project
-        specify init . --ai claude         # Initialize in current directory
-        specify init .                     # Initialize in current directory (interactive AI selection)
-        specify init --here --ai claude    # Alternative syntax for current directory
-        specify init --here --ai codex
-        specify init --here
-        specify init --here --force  # Skip confirmation when current directory not empty
+    從最新模板初始化新的 Specify 專案。
+
+    此命令將會：
+    1. 檢查必要工具是否已安裝（git 為可選）
+    2. 讓你選擇 AI 助手（Claude Code、Gemini CLI、GitHub Copilot、Cursor、Qwen Code、opencode、Codex CLI、Windsurf、Kilo Code、Auggie CLI 或 Amazon Q Developer CLI）
+    3. 從 GitHub 下載適當的模板
+    4. 將模板解壓到新專案目錄或目前目錄
+    5. 初始化新的 git 儲存庫（如果未使用 --no-git 且不存在儲存庫）
+    6. 可選設定 AI 助手命令
+
+    範例：
+        specify-tw init my-project
+        specify-tw init my-project --ai claude
+        specify-tw init my-project --ai gemini
+        specify-tw init my-project --ai copilot --no-git
+        specify-tw init my-project --ai cursor
+        specify-tw init my-project --ai qwen
+        specify-tw init my-project --ai opencode
+        specify-tw init my-project --ai codex
+        specify-tw init my-project --ai windsurf
+        specify-tw init my-project --ai auggie
+        specify-tw init --ignore-agent-tools my-project
+        specify-tw init . --ai claude         # 在目前目錄初始化
+        specify-tw init .                     # 在目前目錄初始化（互動式選擇 AI）
+        specify-tw init --here --ai claude    # 目前目錄的替代語法
+        specify-tw init --here --ai codex
+        specify-tw init --here
+        specify-tw init --here --force  # 目前目錄不為空時跳過確認
     """
     # Show banner first
     show_banner()
@@ -904,15 +905,19 @@ def init(
             if not check_tool("auggie", "https://docs.augmentcode.com/cli/setup-auggie/install-auggie-cli"):
                 install_url = "https://docs.augmentcode.com/cli/setup-auggie/install-auggie-cli"
                 agent_tool_missing = True
+        elif selected_ai == "q":
+            if not check_tool("q", "https://github.com/aws/amazon-q-developer-cli"):
+                install_url = "https://aws.amazon.com/developer/learning/q-developer-cli/"
+                agent_tool_missing = True
         # GitHub Copilot and Cursor checks are not needed as they're typically available in supported IDEs
 
         if agent_tool_missing:
             error_panel = Panel(
-                f"[cyan]{selected_ai}[/cyan] not found\n"
-                f"Install with: [cyan]{install_url}[/cyan]\n"
-                f"{AI_CHOICES[selected_ai]} is required to continue with this project type.\n\n"
-                "Tip: Use [cyan]--ignore-agent-tools[/cyan] to skip this check",
-                title="[red]Agent Detection Error[/red]",
+                f"未找到 [cyan]{selected_ai}[/cyan]\n"
+                f"安裝位置：[cyan]{install_url}[/cyan]\n"
+                f"需要 {AI_CHOICES[selected_ai]} 才能繼續此專案類型。\n\n"
+                "提示：使用 [cyan]--ignore-agent-tools[/cyan] 跳過此檢查",
+                title="[red]代理程式偵測錯誤[/red]",
                 border_style="red",
                 padding=(1, 2)
             )
@@ -944,11 +949,11 @@ def init(
     # Flag to allow suppressing legacy headings
     sys._specify_tracker_active = True
     # Pre steps recorded as completed before live rendering
-    tracker.add("precheck", "Check required tools")
-    tracker.complete("precheck", "ok")
-    tracker.add("ai-select", "Select AI assistant")
+    tracker.add("precheck", "檢查必要工具")
+    tracker.complete("precheck", "完成")
+    tracker.add("ai-select", "選擇 AI 助手")
     tracker.complete("ai-select", f"{selected_ai}")
-    tracker.add("script-select", "Select script type")
+    tracker.add("script-select", "選擇腳本類型")
     tracker.complete("script-select", selected_script)
     for key, label in [
         ("fetch", "取得最新版本"),
@@ -981,18 +986,18 @@ def init(
             if not no_git:
                 tracker.start("git")
                 if is_git_repo(project_path):
-                    tracker.complete("git", "existing repo detected")
+                    tracker.complete("git", "偵測到現有儲存庫")
                 elif should_init_git:
                     if init_git_repo(project_path, quiet=True):
-                        tracker.complete("git", "initialized")
+                        tracker.complete("git", "已初始化")
                     else:
-                        tracker.error("git", "init failed")
+                        tracker.error("git", "初始化失敗")
                 else:
-                    tracker.skip("git", "git not available")
+                    tracker.skip("git", "git 不可用")
             else:
-                tracker.skip("git", "--no-git flag")
+                tracker.skip("git", "--no-git 標誌")
 
-            tracker.complete("final", "project ready")
+            tracker.complete("final", "專案就緒")
         except Exception as e:
             tracker.error("final", str(e))
             console.print(Panel(f"初始化失敗：{e}", title="失敗", border_style="red"))
@@ -1028,7 +1033,8 @@ def init(
         "kilocode": ".kilocode/",
         "auggie": ".augment/",
         "copilot": ".github/",
-        "roo": ".roo/"
+        "roo": ".roo/",
+        "q": ".amazonq/"
     }
     
     if selected_ai in agent_folder_map:
@@ -1061,16 +1067,16 @@ def init(
         else:  # Unix-like systems
             cmd = f"export CODEX_HOME={quoted_path}"
 
-        steps_lines.append(f"{step_num}. Set [cyan]CODEX_HOME[/cyan] environment variable before running Codex: [cyan]{cmd}[/cyan]")
+        steps_lines.append(f"{step_num}. 執行 Codex 前設定 [cyan]CODEX_HOME[/cyan] 環境變數：[cyan]{cmd}[/cyan]")
         step_num += 1
 
-    steps_lines.append(f"{step_num}. 開始使用斜線命令與你的 AI 代理程式：")
+    steps_lines.append(f"{step_num}. 開始使用斜線命令與你的 AI 助手：")
 
-    steps_lines.append("   2.1 [cyan]/constitution[/] - 建立專案原則")
-    steps_lines.append("   2.2 [cyan]/specify[/] - 建立基線規範")
-    steps_lines.append("   2.3 [cyan]/plan[/] - 建立實施計畫")
-    steps_lines.append("   2.4 [cyan]/tasks[/] - 產生可執行任務")
-    steps_lines.append("   2.5 [cyan]/implement[/] - 執行實施")
+    steps_lines.append("   - [cyan]/constitution[/] - 建立專案原則")
+    steps_lines.append("   - [cyan]/specify[/] - 建立基線規範")
+    steps_lines.append("   - [cyan]/plan[/] - 建立實施計畫")
+    steps_lines.append("   - [cyan]/tasks[/] - 產生可執行任務")
+    steps_lines.append("   - [cyan]/implement[/] - 執行實施")
 
     steps_panel = Panel("\n".join(steps_lines), title="後續步驟", border_style="cyan", padding=(1,2))
     console.print()
@@ -1099,27 +1105,28 @@ def init(
 
 @app.command()
 def check():
-    """Check that all required tools are installed."""
+    """檢查是否已安裝所有必要工具。"""
     show_banner()
     console.print("[bold]正在檢查已安裝的工具...[/bold]\n")
 
     tracker = StepTracker("檢查可用工具")
-    
-    tracker.add("git", "Git version control")
+
+    tracker.add("git", "Git 版本控制")
     tracker.add("claude", "Claude Code CLI")
     tracker.add("gemini", "Gemini CLI")
     tracker.add("qwen", "Qwen Code CLI")
     tracker.add("code", "Visual Studio Code")
     tracker.add("code-insiders", "Visual Studio Code Insiders")
-    tracker.add("cursor-agent", "Cursor IDE agent")
+    tracker.add("cursor-agent", "Cursor IDE 代理程式")
     tracker.add("windsurf", "Windsurf IDE")
     tracker.add("kilocode", "Kilo Code IDE")
     tracker.add("opencode", "opencode")
     tracker.add("codex", "Codex CLI")
     tracker.add("auggie", "Auggie CLI")
-    
+    tracker.add("q", "Amazon Q Developer CLI")
+
     git_ok = check_tool_for_tracker("git", tracker)
-    claude_ok = check_tool_for_tracker("claude", tracker)  
+    claude_ok = check_tool_for_tracker("claude", tracker)
     gemini_ok = check_tool_for_tracker("gemini", tracker)
     qwen_ok = check_tool_for_tracker("qwen", tracker)
     code_ok = check_tool_for_tracker("code", tracker)
@@ -1130,6 +1137,7 @@ def check():
     opencode_ok = check_tool_for_tracker("opencode", tracker)
     codex_ok = check_tool_for_tracker("codex", tracker)
     auggie_ok = check_tool_for_tracker("auggie", tracker)
+    q_ok = check_tool_for_tracker("q", tracker)
 
     console.print(tracker.render())
 
@@ -1137,7 +1145,7 @@ def check():
 
     if not git_ok:
         console.print("[dim]提示：安裝 git 用於儲存庫管理[/dim]")
-    if not (claude_ok or gemini_ok or cursor_ok or qwen_ok or windsurf_ok or kilocode_ok or opencode_ok or codex_ok or auggie_ok):
+    if not (claude_ok or gemini_ok or cursor_ok or qwen_ok or windsurf_ok or kilocode_ok or opencode_ok or codex_ok or auggie_ok or q_ok):
         console.print("[dim]提示：安裝 AI 助手以獲得最佳體驗[/dim]")
 
 

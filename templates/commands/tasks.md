@@ -15,7 +15,7 @@ $ARGUMENTS
 
 ## 大綱
 
-1. **設定**：從儲存庫根目錄執行 `{SCRIPT}` 並解析 FEATURE_DIR 和 AVAILABLE_DOCS 清單。所有路徑必須是絕對路徑。
+1. **設定**：從儲存庫根目錄執行 `{SCRIPT}` 並解析 FEATURE_DIR 和 AVAILABLE_DOCS 清單。所有路徑必須是絕對路徑。對於參數中包含單引號的情況（如 "I'm Groot"），請使用轉義語法：例如 'I'\''m Groot'（或者如果可能，使用雙引號："I'm Groot"）。
 
 2. **載入設計文件**：從 FEATURE_DIR 讀取：
    - **必需**：plan.md（技術堆疊、函式庫、結構）、spec.md（具有優先順序的使用者故事）

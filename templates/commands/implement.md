@@ -15,7 +15,7 @@ $ARGUMENTS
 
 ## 大綱
 
-1. 從儲存庫根目錄執行 `{SCRIPT}` 並解析 FEATURE_DIR 和 AVAILABLE_DOCS 清單。所有路徑必須是絕對路徑。
+1. 從儲存庫根目錄執行 `{SCRIPT}` 並解析 FEATURE_DIR 和 AVAILABLE_DOCS 清單。所有路徑必須是絕對路徑。對於參數中包含單引號的情況（如 "I'm Groot"），請使用轉義語法：例如 'I'\''m Groot'（或者如果可能，使用雙引號："I'm Groot"）。
 
 2. **檢查檢查清單狀態**（如果存在 FEATURE_DIR/checklists/）：
    - 掃描 checklists/ 目錄中的所有檢查清單檔案
