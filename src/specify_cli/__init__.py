@@ -10,7 +10,7 @@
 # ]
 # ///
 """
-Specify CN CLI - Setup tool for Specify projects
+Specify TW CLI - Setup tool for Specify projects
 
 Usage:
     uvx specify-tw-cli.py init <project-name>
@@ -246,7 +246,7 @@ def select_with_arrows(options: dict, prompt_text: str = "Select an option", def
                 table.add_row(" ", f"[cyan]{key}[/cyan] [dim]({options[key]})[/dim]")
         
         table.add_row("", "")
-        table.add_row("", "[dim]使用 ↑/↓ 导航，Enter 选择，Esc 取消[/dim]")
+        table.add_row("", "[dim]使用 ↑/↓ 導航，Enter 選擇，Esc 取消[/dim]")
         
         return Panel(
             table,
@@ -271,19 +271,19 @@ def select_with_arrows(options: dict, prompt_text: str = "Select an option", def
                         selected_key = option_keys[selected_index]
                         break
                     elif key == 'escape':
-                        console.print("\n[yellow]选择已取消[/yellow]")
+                        console.print("\n[yellow]選擇已取消[/yellow]")
                         raise typer.Exit(1)
                     
                     live.update(create_selection_panel(), refresh=True)
 
                 except KeyboardInterrupt:
-                    console.print("\n[yellow]选择已取消[/yellow]")
+                    console.print("\n[yellow]選擇已取消[/yellow]")
                     raise typer.Exit(1)
 
     run_selection_loop()
 
     if selected_key is None:
-        console.print("\n[red]选择失败。[/red]")
+        console.print("\n[red]選擇失敗。[/red]")
         raise typer.Exit(1)
 
     # Suppress explicit selection print; tracker / later logic will report consolidated status
@@ -350,10 +350,10 @@ def run_command(cmd: list[str], check_return: bool = True, capture: bool = False
             return None
     except subprocess.CalledProcessError as e:
         if check_return:
-            console.print(f"[red]运行命令错误：[/red] {' '.join(cmd)}")
-            console.print(f"[red]退出码：[/red] {e.returncode}")
+            console.print(f"[red]執行命令錯誤：[/red] {' '.join(cmd)}")
+            console.print(f"[red]退出碼：[/red] {e.returncode}")
             if hasattr(e, 'stderr') and e.stderr:
-                console.print(f"[red]错误输出：[/red] {e.stderr}")
+                console.print(f"[red]錯誤輸出：[/red] {e.stderr}")
             raise
         return None
 
@@ -415,30 +415,30 @@ def init_git_repo(project_path: Path, quiet: bool = False) -> bool:
         original_cwd = Path.cwd()
         os.chdir(project_path)
         if not quiet:
-            console.print("[cyan]正在初始化 git 仓库...[/cyan]")
+            console.print("[cyan]正在初始化 git 儲存庫...[/cyan]")
         subprocess.run(["git", "init"], check=True, capture_output=True)
         subprocess.run(["git", "add", "."], check=True, capture_output=True)
         subprocess.run(["git", "commit", "-m", "Initial commit from Specify template"], check=True, capture_output=True)
         if not quiet:
-            console.print("[green]✓[/green] Git 仓库已初始化")
+            console.print("[green]✓[/green] Git 儲存庫已初始化")
         return True
-        
+
     except subprocess.CalledProcessError as e:
         if not quiet:
-            console.print(f"[red]初始化 git 仓库错误：[/red] {e}")
+            console.print(f"[red]初始化 git 儲存庫錯誤：[/red] {e}")
         return False
     finally:
         os.chdir(original_cwd)
 
 
 def download_template_from_github(ai_assistant: str, download_dir: Path, *, script_type: str = "sh", verbose: bool = True, show_progress: bool = True, client: httpx.Client = None, debug: bool = False, github_token: str = None) -> Tuple[Path, dict]:
-    repo_owner = "Linfee"
+    repo_owner = "Minidoracat"
     repo_name = "spec-kit-tw"
     if client is None:
         client = httpx.Client(verify=ssl_context)
     
     if verbose:
-        console.print("[cyan]正在获取最新版本信息...[/cyan]")
+        console.print("[cyan]正在取得最新版本資訊...[/cyan]")
     api_url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/releases/latest"
     
     try:
@@ -459,8 +459,8 @@ def download_template_from_github(ai_assistant: str, download_dir: Path, *, scri
         except ValueError as je:
             raise RuntimeError(f"Failed to parse release JSON: {je}\nRaw (truncated 400): {response.text[:400]}")
     except Exception as e:
-        console.print(f"[red]获取版本信息错误[/red]")
-        console.print(Panel(str(e), title="获取错误", border_style="red"))
+        console.print(f"[red]取得版本資訊錯誤[/red]")
+        console.print(Panel(str(e), title="取得錯誤", border_style="red"))
         raise typer.Exit(1)
     
     # Find the template asset for the specified AI assistant
@@ -474,9 +474,9 @@ def download_template_from_github(ai_assistant: str, download_dir: Path, *, scri
     asset = matching_assets[0] if matching_assets else None
 
     if asset is None:
-        console.print(f"[red]未找到匹配的发布资源[/red] for [bold]{ai_assistant}[/bold] (预期模式: [bold]{pattern}[/bold])")
+        console.print(f"[red]未找到符合的發布資源[/red] for [bold]{ai_assistant}[/bold] (預期模式: [bold]{pattern}[/bold])")
         asset_names = [a.get('name', '?') for a in assets]
-        console.print(Panel("\n".join(asset_names) or "(无资源)", title="可用资源", border_style="yellow"))
+        console.print(Panel("\n".join(asset_names) or "(無資源)", title="可用資源", border_style="yellow"))
         raise typer.Exit(1)
 
     download_url = asset["browser_download_url"]
@@ -485,12 +485,12 @@ def download_template_from_github(ai_assistant: str, download_dir: Path, *, scri
     
     if verbose:
         console.print(f"[cyan]找到模板：[/cyan] {filename}")
-        console.print(f"[cyan]大小：[/cyan] {file_size:,} 字节")
+        console.print(f"[cyan]大小：[/cyan] {file_size:,} 位元組")
         console.print(f"[cyan]版本：[/cyan] {release_data['tag_name']}")
 
     zip_path = download_dir / filename
     if verbose:
-        console.print(f"[cyan]正在下载模板...[/cyan]")
+        console.print(f"[cyan]正在下載模板...[/cyan]")
     
     try:
         with client.stream(
@@ -526,14 +526,14 @@ def download_template_from_github(ai_assistant: str, download_dir: Path, *, scri
                         for chunk in response.iter_bytes(chunk_size=8192):
                             f.write(chunk)
     except Exception as e:
-        console.print(f"[red]下载模板错误[/red]")
+        console.print(f"[red]下載模板錯誤[/red]")
         detail = str(e)
         if zip_path.exists():
             zip_path.unlink()
-        console.print(Panel(detail, title="下载错误", border_style="red"))
+        console.print(Panel(detail, title="下載錯誤", border_style="red"))
         raise typer.Exit(1)
     if verbose:
-        console.print(f"已下载：{filename}")
+        console.print(f"已下載：{filename}")
     metadata = {
         "filename": filename,
         "size": file_size,
@@ -579,7 +579,7 @@ def download_and_extract_template(project_path: Path, ai_assistant: str, script_
         tracker.add("extract", "Extract template")
         tracker.start("extract")
     elif verbose:
-        console.print("正在解压模板...")
+        console.print("正在解壓模板...")
     
     try:
         # Create project directory only if not using current directory
@@ -593,7 +593,7 @@ def download_and_extract_template(project_path: Path, ai_assistant: str, script_
                 tracker.start("zip-list")
                 tracker.complete("zip-list", f"{len(zip_contents)} entries")
             elif verbose:
-                console.print(f"[cyan]ZIP 包含 {len(zip_contents)} 个项目[/cyan]")
+                console.print(f"[cyan]ZIP 包含 {len(zip_contents)} 個項目[/cyan]")
             
             # For current directory, extract to a temp location first
             if is_current_dir:
@@ -607,7 +607,7 @@ def download_and_extract_template(project_path: Path, ai_assistant: str, script_
                         tracker.start("extracted-summary")
                         tracker.complete("extracted-summary", f"temp {len(extracted_items)} items")
                     elif verbose:
-                        console.print(f"[cyan]已解压 {len(extracted_items)} 个项目到临时位置[/cyan]")
+                        console.print(f"[cyan]已解壓 {len(extracted_items)} 個項目到暫存位置[/cyan]")
                     
                     # Handle GitHub-style ZIP with a single root directory
                     source_dir = temp_path
@@ -617,7 +617,7 @@ def download_and_extract_template(project_path: Path, ai_assistant: str, script_
                             tracker.add("flatten", "Flatten nested directory")
                             tracker.complete("flatten")
                         elif verbose:
-                            console.print(f"[cyan]发现嵌套目录结构[/cyan]")
+                            console.print(f"[cyan]發現巢狀目錄結構[/cyan]")
                     
                     # Copy contents to current directory
                     for item in source_dir.iterdir():
@@ -625,7 +625,7 @@ def download_and_extract_template(project_path: Path, ai_assistant: str, script_
                         if item.is_dir():
                             if dest_path.exists():
                                 if verbose and not tracker:
-                                    console.print(f"[yellow]正在合并目录：[/yellow] {item.name}")
+                                    console.print(f"[yellow]正在合併目錄：[/yellow] {item.name}")
                                 # Recursively copy directory contents
                                 for sub_item in item.rglob('*'):
                                     if sub_item.is_file():
@@ -637,10 +637,10 @@ def download_and_extract_template(project_path: Path, ai_assistant: str, script_
                                 shutil.copytree(item, dest_path)
                         else:
                             if dest_path.exists() and verbose and not tracker:
-                                console.print(f"[yellow]正在覆盖文件：[/yellow] {item.name}")
+                                console.print(f"[yellow]正在覆蓋檔案：[/yellow] {item.name}")
                             shutil.copy2(item, dest_path)
                     if verbose and not tracker:
-                        console.print(f"[cyan]模板文件已合并到当前目录[/cyan]")
+                        console.print(f"[cyan]模板檔案已合併到目前目錄[/cyan]")
             else:
                 # Extract directly to project directory (original behavior)
                 zip_ref.extractall(project_path)
@@ -651,9 +651,9 @@ def download_and_extract_template(project_path: Path, ai_assistant: str, script_
                     tracker.start("extracted-summary")
                     tracker.complete("extracted-summary", f"{len(extracted_items)} top-level items")
                 elif verbose:
-                    console.print(f"[cyan]已解压 {len(extracted_items)} 个项目到 {project_path}：[/cyan]")
+                    console.print(f"[cyan]已解壓 {len(extracted_items)} 個項目到 {project_path}：[/cyan]")
                     for item in extracted_items:
-                        console.print(f"  - {item.name} ({'目录' if item.is_dir() else '文件'})")
+                        console.print(f"  - {item.name} ({'目錄' if item.is_dir() else '檔案'})")
                 
                 # Handle GitHub-style ZIP with a single root directory
                 if len(extracted_items) == 1 and extracted_items[0].is_dir():
@@ -670,16 +670,16 @@ def download_and_extract_template(project_path: Path, ai_assistant: str, script_
                         tracker.add("flatten", "Flatten nested directory")
                         tracker.complete("flatten")
                     elif verbose:
-                        console.print(f"[cyan]已扁平化嵌套目录结构[/cyan]")
+                        console.print(f"[cyan]已扁平化巢狀目錄結構[/cyan]")
                     
     except Exception as e:
         if tracker:
             tracker.error("extract", str(e))
         else:
             if verbose:
-                console.print(f"[red]解压模板错误：[/red] {e}")
+                console.print(f"[red]解壓模板錯誤：[/red] {e}")
                 if debug:
-                    console.print(Panel(str(e), title="解压错误", border_style="red"))
+                    console.print(Panel(str(e), title="解壓錯誤", border_style="red"))
         # Clean up project directory if created and not current directory
         if not is_current_dir and project_path.exists():
             shutil.rmtree(project_path)
@@ -739,9 +739,9 @@ def ensure_executable_scripts(project_path: Path, tracker: StepTracker | None = 
         (tracker.error if failures else tracker.complete)("chmod", detail)
     else:
         if updated:
-            console.print(f"[cyan]已递归更新 {updated} 个脚本的执行权限[/cyan]")
+            console.print(f"[cyan]已遞迴更新 {updated} 個腳本的執行權限[/cyan]")
         if failures:
-            console.print("[yellow]部分脚本无法更新：[/yellow]")
+            console.print("[yellow]部分腳本無法更新：[/yellow]")
             for f in failures:
                 console.print(f"  - {f}")
 
@@ -798,11 +798,11 @@ def init(
 
     # Validate arguments
     if here and project_name:
-        console.print("[red]错误：[/red] 不能同时指定项目名称和 --here 标志")
+        console.print("[red]錯誤：[/red] 不能同時指定專案名稱和 --here 標誌")
         raise typer.Exit(1)
-    
+
     if not here and not project_name:
-        console.print("[red]错误：[/red] 必须指定项目名称、使用 '.' 表示当前目录，或使用 --here 标志")
+        console.print("[red]錯誤：[/red] 必須指定專案名稱、使用 '.' 表示目前目錄，或使用 --here 標誌")
         raise typer.Exit(1)
     
     # Determine project directory
@@ -813,13 +813,13 @@ def init(
         # Check if current directory has any files
         existing_items = list(project_path.iterdir())
         if existing_items:
-            console.print(f"[yellow]警告：[/yellow] 当前目录不为空 ({len(existing_items)} 个项目)")
-            console.print("[yellow]模板文件将与现有内容合并并可能覆盖现有文件[/yellow]")
+            console.print(f"[yellow]警告：[/yellow] 目前目錄不為空 ({len(existing_items)} 個項目)")
+            console.print("[yellow]模板檔案將與現有內容合併並可能覆蓋現有檔案[/yellow]")
             if force:
-                console.print("[cyan]--force 已提供：跳过确认并继续合并[/cyan]")
+                console.print("[cyan]--force 已提供：跳過確認並繼續合併[/cyan]")
             else:
                 # Ask for confirmation
-                response = typer.confirm("是否要继续？")
+                response = typer.confirm("是否要繼續？")
                 if not response:
                     console.print("[yellow]操作已取消[/yellow]")
                     raise typer.Exit(0)
@@ -828,9 +828,9 @@ def init(
         # Check if project directory already exists
         if project_path.exists():
             error_panel = Panel(
-                f"目录 '[cyan]{project_name}[/cyan]' 已存在\n"
-                "请选择不同的项目名称或删除现有目录。",
-                title="[red]目录冲突[/red]",
+                f"目錄 '[cyan]{project_name}[/cyan]' 已存在\n"
+                "請選擇不同的專案名稱或刪除現有目錄。",
+                title="[red]目錄衝突[/red]",
                 border_style="red",
                 padding=(1, 2)
             )
@@ -842,15 +842,15 @@ def init(
     current_dir = Path.cwd()
     
     setup_lines = [
-        "[cyan]Specify 项目设置[/cyan]",
+        "[cyan]Specify 專案設置[/cyan]",
         "",
-        f"{'项目':<15} [green]{project_path.name}[/green]",
-        f"{'工作路径':<15} [dim]{current_dir}[/dim]",
+        f"{'專案':<15} [green]{project_path.name}[/green]",
+        f"{'工作路徑':<15} [dim]{current_dir}[/dim]",
     ]
-    
+
     # Add target path only if different from working dir
     if not here:
-        setup_lines.append(f"{'目标路径':<15} [dim]{project_path}[/dim]")
+        setup_lines.append(f"{'目標路徑':<15} [dim]{project_path}[/dim]")
     
     console.print(Panel("\n".join(setup_lines), border_style="cyan", padding=(1, 2)))
     
@@ -860,19 +860,19 @@ def init(
     if not no_git:
         should_init_git = check_tool("git", "https://git-scm.com/downloads")
         if not should_init_git:
-            console.print("[yellow]未找到 Git - 将跳过仓库初始化[/yellow]")
+            console.print("[yellow]未找到 Git - 將跳過儲存庫初始化[/yellow]")
 
     # AI assistant selection
     if ai_assistant:
         if ai_assistant not in AI_CHOICES:
-            console.print(f"[red]错误：[/red] 无效的 AI 助手 '{ai_assistant}'。请选择：{', '.join(AI_CHOICES.keys())}")
+            console.print(f"[red]錯誤：[/red] 無效的 AI 助手 '{ai_assistant}'。請選擇：{', '.join(AI_CHOICES.keys())}")
             raise typer.Exit(1)
         selected_ai = ai_assistant
     else:
         # Use arrow-key selection interface
         selected_ai = select_with_arrows(
             AI_CHOICES,
-            "选择你的 AI 助手：",
+            "選擇你的 AI 助手：",
             "copilot"
         )
     
@@ -923,7 +923,7 @@ def init(
     # Determine script type (explicit, interactive, or OS default)
     if script_type:
         if script_type not in SCRIPT_TYPE_CHOICES:
-            console.print(f"[red]错误：[/red] 无效的脚本类型 '{script_type}'。请选择：{', '.join(SCRIPT_TYPE_CHOICES.keys())}")
+            console.print(f"[red]錯誤：[/red] 無效的腳本類型 '{script_type}'。請選擇：{', '.join(SCRIPT_TYPE_CHOICES.keys())}")
             raise typer.Exit(1)
         selected_script = script_type
     else:
@@ -931,16 +931,16 @@ def init(
         default_script = "ps" if os.name == "nt" else "sh"
         # Provide interactive selection similar to AI if stdin is a TTY
         if sys.stdin.isatty():
-            selected_script = select_with_arrows(SCRIPT_TYPE_CHOICES, "选择脚本类型（或按 Enter）", default_script)
+            selected_script = select_with_arrows(SCRIPT_TYPE_CHOICES, "選擇腳本類型（或按 Enter）", default_script)
         else:
             selected_script = default_script
-    
-    console.print(f"[cyan]选择的 AI 助手：[/cyan] {selected_ai}")
-    console.print(f"[cyan]选择的脚本类型：[/cyan] {selected_script}")
+
+    console.print(f"[cyan]選擇的 AI 助手：[/cyan] {selected_ai}")
+    console.print(f"[cyan]選擇的腳本類型：[/cyan] {selected_script}")
     
     # Download and set up project
     # New tree-based progress (no emojis); include earlier substeps
-    tracker = StepTracker("初始化 Specify 项目")
+    tracker = StepTracker("初始化 Specify 專案")
     # Flag to allow suppressing legacy headings
     sys._specify_tracker_active = True
     # Pre steps recorded as completed before live rendering
@@ -951,14 +951,14 @@ def init(
     tracker.add("script-select", "Select script type")
     tracker.complete("script-select", selected_script)
     for key, label in [
-        ("fetch", "获取最新版本"),
-        ("download", "下载模板"),
-        ("extract", "解压模板"),
-        ("zip-list", "归档内容"),
-        ("extracted-summary", "解压摘要"),
-        ("chmod", "确保脚本可执行"),
+        ("fetch", "取得最新版本"),
+        ("download", "下載模板"),
+        ("extract", "解壓模板"),
+        ("zip-list", "歸檔內容"),
+        ("extracted-summary", "解壓摘要"),
+        ("chmod", "確保腳本可執行"),
         ("cleanup", "清理"),
-        ("git", "初始化 git 仓库"),
+        ("git", "初始化 git 儲存庫"),
         ("final", "完成")
     ]:
         tracker.add(key, label)
@@ -995,7 +995,7 @@ def init(
             tracker.complete("final", "project ready")
         except Exception as e:
             tracker.error("final", str(e))
-            console.print(Panel(f"初始化失败：{e}", title="失败", border_style="red"))
+            console.print(Panel(f"初始化失敗：{e}", title="失敗", border_style="red"))
             if debug:
                 _env_pairs = [
                     ("Python", sys.version.split()[0]),
@@ -1004,7 +1004,7 @@ def init(
                 ]
                 _label_width = max(len(k) for k, _ in _env_pairs)
                 env_lines = [f"{k.ljust(_label_width)} → [dim]{v}[/dim]" for k, v in _env_pairs]
-                console.print(Panel("\n".join(env_lines), title="调试环境", border_style="magenta"))
+                console.print(Panel("\n".join(env_lines), title="調試環境", border_style="magenta"))
             if not here and project_path.exists():
                 shutil.rmtree(project_path)
             raise typer.Exit(1)
@@ -1014,7 +1014,7 @@ def init(
 
     # Final static tree (ensures finished state visible after Live context ends)
     console.print(tracker.render())
-    console.print("\n[bold green]项目就绪。[/bold green]")
+    console.print("\n[bold green]專案就緒。[/bold green]")
     
     # Agent folder security notice
     agent_folder_map = {
@@ -1034,9 +1034,9 @@ def init(
     if selected_ai in agent_folder_map:
         agent_folder = agent_folder_map[selected_ai]
         security_notice = Panel(
-            f"某些代理可能会在项目内的代理文件夹中存储凭据、身份验证令牌或其他识别和私有工件。\n"
-            f"考虑将 [cyan]{agent_folder}[/cyan]（或其部分）添加到 [cyan].gitignore[/cyan] 以防止意外凭据泄露。",
-            title="[yellow]代理文件夹安全[/yellow]",
+            f"某些代理程式可能會在專案內的代理程式資料夾中儲存憑證、身份驗證令牌或其他識別和私有工件。\n"
+            f"考慮將 [cyan]{agent_folder}[/cyan]（或其部分）加入到 [cyan].gitignore[/cyan] 以防止意外洩露憑證。",
+            title="[yellow]代理程式資料夾安全[/yellow]",
             border_style="yellow",
             padding=(1, 2)
         )
@@ -1046,10 +1046,10 @@ def init(
     # Boxed "Next steps" section
     steps_lines = []
     if not here:
-        steps_lines.append(f"1. 进入项目文件夹：[cyan]cd {project_name}[/cyan]")
+        steps_lines.append(f"1. 進入專案資料夾：[cyan]cd {project_name}[/cyan]")
         step_num = 2
     else:
-        steps_lines.append("1. 你已经在项目目录中！")
+        steps_lines.append("1. 你已經在專案目錄中！")
         step_num = 2
 
     # Add Codex-specific setup step if needed
@@ -1060,40 +1060,40 @@ def init(
             cmd = f"setx CODEX_HOME {quoted_path}"
         else:  # Unix-like systems
             cmd = f"export CODEX_HOME={quoted_path}"
-        
+
         steps_lines.append(f"{step_num}. Set [cyan]CODEX_HOME[/cyan] environment variable before running Codex: [cyan]{cmd}[/cyan]")
         step_num += 1
 
-    steps_lines.append(f"{step_num}. 开始使用斜杠命令与你的 AI 代理：")
+    steps_lines.append(f"{step_num}. 開始使用斜線命令與你的 AI 代理程式：")
 
-    steps_lines.append("   2.1 [cyan]/constitution[/] - 建立项目原则")
-    steps_lines.append("   2.2 [cyan]/specify[/] - 创建基线规范")
-    steps_lines.append("   2.3 [cyan]/plan[/] - 创建实施计划")
-    steps_lines.append("   2.4 [cyan]/tasks[/] - 生成可执行任务")
-    steps_lines.append("   2.5 [cyan]/implement[/] - 执行实施")
+    steps_lines.append("   2.1 [cyan]/constitution[/] - 建立專案原則")
+    steps_lines.append("   2.2 [cyan]/specify[/] - 建立基線規範")
+    steps_lines.append("   2.3 [cyan]/plan[/] - 建立實施計畫")
+    steps_lines.append("   2.4 [cyan]/tasks[/] - 產生可執行任務")
+    steps_lines.append("   2.5 [cyan]/implement[/] - 執行實施")
 
-    steps_panel = Panel("\n".join(steps_lines), title="后续步骤", border_style="cyan", padding=(1,2))
+    steps_panel = Panel("\n".join(steps_lines), title="後續步驟", border_style="cyan", padding=(1,2))
     console.print()
     console.print(steps_panel)
 
     enhancement_lines = [
-        "可用于规范的可选命令 [bright_black]（提高质量和信心）[/bright_black]",
+        "可用於規範的選用命令 [bright_black]（提高品質和信心）[/bright_black]",
         "",
-        f"○ [cyan]/clarify[/] [bright_black]（可选）[/bright_black] - 在规划前提出结构化问题以降低模糊区域的风险（如果使用则在 [cyan]/plan[/] 前运行）",
-        f"○ [cyan]/analyze[/] [bright_black]（可选）[/bright_black] - 跨工件一致性和对齐报告（在 [cyan]/tasks[/] 后，[cyan]/implement[/] 前）"
+        f"○ [cyan]/clarify[/] [bright_black]（選用）[/bright_black] - 在規劃前提出結構化問題以降低模糊區域的風險（如果使用則在 [cyan]/plan[/] 前執行）",
+        f"○ [cyan]/analyze[/] [bright_black]（選用）[/bright_black] - 跨工件一致性和對齊報告（在 [cyan]/tasks[/] 後，[cyan]/implement[/] 前）"
     ]
-    enhancements_panel = Panel("\n".join(enhancement_lines), title="增强命令", border_style="cyan", padding=(1,2))
+    enhancements_panel = Panel("\n".join(enhancement_lines), title="增強命令", border_style="cyan", padding=(1,2))
     console.print()
     console.print(enhancements_panel)
 
     if selected_ai == "codex":
-        warning_text = """[bold yellow]重要说明：[/bold yellow]
+        warning_text = """[bold yellow]重要說明：[/bold yellow]
 
-自定义提示在 Codex 中尚不支持参数。您可能需要直接在位于 [cyan].codex/prompts/[/cyan] 的提示文件中手动指定其他项目指令。
+自訂提示在 Codex 中尚不支援參數。您可能需要直接在位於 [cyan].codex/prompts/[/cyan] 的提示檔案中手動指定其他專案指令。
 
-更多信息，请参见：[cyan]https://github.com/openai/codex/issues/2890[/cyan]"""
-        
-        warning_panel = Panel(warning_text, title="Codex 中的斜杠命令", border_style="yellow", padding=(1,2))
+更多資訊，請參見：[cyan]https://github.com/openai/codex/issues/2890[/cyan]"""
+
+        warning_panel = Panel(warning_text, title="Codex 中的斜線命令", border_style="yellow", padding=(1,2))
         console.print()
         console.print(warning_panel)
 
@@ -1101,9 +1101,9 @@ def init(
 def check():
     """Check that all required tools are installed."""
     show_banner()
-    console.print("[bold]正在检查已安装的工具...[/bold]\n")
+    console.print("[bold]正在檢查已安裝的工具...[/bold]\n")
 
-    tracker = StepTracker("检查可用工具")
+    tracker = StepTracker("檢查可用工具")
     
     tracker.add("git", "Git version control")
     tracker.add("claude", "Claude Code CLI")
@@ -1133,12 +1133,12 @@ def check():
 
     console.print(tracker.render())
 
-    console.print("\n[bold green]Specify TW CLI 已准备就绪！[/bold green]")
+    console.print("\n[bold green]Specify TW CLI 已準備就緒！[/bold green]")
 
     if not git_ok:
-        console.print("[dim]提示：安装 git 用于仓库管理[/dim]")
+        console.print("[dim]提示：安裝 git 用於儲存庫管理[/dim]")
     if not (claude_ok or gemini_ok or cursor_ok or qwen_ok or windsurf_ok or kilocode_ok or opencode_ok or codex_ok or auggie_ok):
-        console.print("[dim]Tip: Install an AI assistant for the best experience[/dim]")
+        console.print("[dim]提示：安裝 AI 助手以獲得最佳體驗[/dim]")
 
 
 def main():

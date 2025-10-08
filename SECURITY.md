@@ -1,31 +1,31 @@
-感谢您帮助确保GitHub对每个人都更加安全。
+感謝您幫助確保 GitHub 對每個人都更加安全。
 
 # 安全性
 
-GitHub非常重视我们软件产品和服务的安全性，包括通过我们GitHub组织管理的所有开源代码仓库，例如[GitHub](https://github.com/GitHub)。
+GitHub 非常重視我們軟體產品和服務的安全性，包括透過我們 GitHub 組織管理的所有開源程式碼儲存庫，例如 [GitHub](https://github.com/GitHub)。
 
-尽管[开源仓库不在我们的漏洞赏金计划范围内](https://bounty.github.com/index.html#scope)，因此没有资格获得赏金奖励，但我们会确保您的发现能够传达给相应的维护者进行修复。
+儘管[開源儲存庫不在我們的漏洞賞金計畫範圍內](https://bounty.github.com/index.html#scope)，因此沒有資格獲得賞金獎勵，但我們會確保您的發現能夠傳達給相應的維護者進行修復。
 
-## 报告安全问题
+## 報告安全問題
 
-如果您认为在任何GitHub拥有的仓库中发现了安全漏洞，请通过协调披露的方式向我们报告。
+如果您認為在任何 GitHub 擁有的儲存庫中發現了安全漏洞，請透過協調披露的方式向我們報告。
 
-**请不要通过公共GitHub issues、discussions或pull requests报告安全漏洞。**
+**請勿透過公開的 GitHub issues、discussions 或 pull requests 報告安全漏洞。**
 
-相反，请发送邮件至opensource-security[@]github.com。
+請改為發送郵件至 opensource-security[@]github.com。
 
-请尽可能包含以下列出的信息，以帮助我们更好地理解和解决问题：
+請盡可能包含以下列出的資訊，以幫助我們更好地理解和解決問題：
 
-  * 问题的类型（例如：缓冲区溢出、SQL注入或跨站脚本）
-  * 与问题表现相关的源文件的完整路径
-  * 受影响的源代码位置（标签/分支/提交或直接URL）
-  * 重现问题所需的任何特殊配置
-  * 重现问题的分步说明
-  * 概念验证或利用代码（如果可能）
-  * 问题的影响，包括攻击者可能如何利用该问题
+  * 問題的類型（例如：緩衝區溢位、SQL 注入或跨站腳本）
+  * 與問題表現相關的原始檔案的完整路徑
+  * 受影響的原始程式碼位置（標籤/分支/提交或直接 URL）
+  * 重現問題所需的任何特殊配置
+  * 重現問題的逐步說明
+  * 概念驗證或利用程式碼（如果可能）
+  * 問題的影響，包括攻擊者可能如何利用該問題
 
-这些信息将帮助我们更快地对您的报告进行分类。
+這些資訊將幫助我們更快地對您的報告進行分類。
 
 ## 政策
 
-请参阅[GitHub的安全港政策](https://docs.github.com/en/site-policy/security-policies/github-bug-bounty-program-legal-safe-harbor#1-safe-harbor-terms)
+請參閱 [GitHub 的安全港政策](https://docs.github.com/en/site-policy/security-policies/github-bug-bounty-program-legal-safe-harbor#1-safe-harbor-terms)
