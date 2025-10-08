@@ -1,53 +1,53 @@
-## 为 Spec Kit 做贡献
+## 為 Spec Kit 做貢獻
 
-你好！我们很高兴你愿意为 Spec Kit 做出贡献。本项目的贡献内容根据[项目开源许可证](LICENSE)向公众发布。
+你好！我們很高興你願意為 Spec Kit 做出貢獻。本專案的貢獻內容根據[專案開源許可證](LICENSE)向公眾發布。
 
-请注意，本项目随[贡献者行为准则](CODE_OF_CONDUCT.md)一起发布。参与本项目即表示你同意遵守其条款。
+請注意，本專案隨[貢獻者行為準則](CODE_OF_CONDUCT.md)一起發布。參與本專案即表示你同意遵守其條款。
 
-## 运行和测试代码的先决条件
+## 執行和測試程式碼的先決條件
 
-这些是在提交拉取请求（PR）过程中，能够在本地测试你的更改所需的一次性安装。
+這些是在提交拉取請求（PR）過程中，能夠在本地測試你的變更所需的一次性安裝。
 
-1. 安装 [Python 3.11+](https://www.python.org/downloads/)
-1. 安装 [uv](https://docs.astral.sh/uv/) 用于包管理
-1. 安装 [Git](https://git-scm.com/downloads)
-1. 准备一个 AI 编码代理：推荐使用 [Claude Code](https://www.anthropic.com/claude-code)、[GitHub Copilot](https://code.visualstudio.com/) 或 [Gemini CLI](https://github.com/google-gemini/gemini-cli)，我们也在努力添加对其他代理的支持。
+1. 安裝 [Python 3.11+](https://www.python.org/downloads/)
+1. 安裝 [uv](https://docs.astral.sh/uv/) 用於套件管理
+1. 安裝 [Git](https://git-scm.com/downloads)
+1. 準備一個 AI 編碼代理：推薦使用 [Claude Code](https://www.anthropic.com/claude-code)、[GitHub Copilot](https://code.visualstudio.com/) 或 [Gemini CLI](https://github.com/google-gemini/gemini-cli)，我們也在努力添加對其他代理的支援。
 
-## 提交拉取请求
+## 提交拉取請求
 
 >[!NOTE]
->如果你的拉取请求引入了对 CLI 或仓库其他部分工作产生实质性影响的大型更改（例如，引入新模板、参数或其他重大更改），请确保该更改已**经过项目维护者的讨论和同意**。未经事先对话和同意的大型更改拉取请求将被关闭。
+>如果你的拉取請求引入了對 CLI 或儲存庫其他部分工作產生實質性影響的大型變更（例如，引入新模板、參數或其他重大變更），請確保該變更已**經過專案維護者的討論和同意**。未經事先對話和同意的大型變更拉取請求將被關閉。
 
-1. Fork 并克隆仓库
-1. 配置和安装依赖项：`uv sync`
-1. 确保 CLI 在你的机器上正常工作：`uv run specify-cn --help`
-1. 创建新分支：`git checkout -b my-branch-name`
-1. 进行更改，添加测试，并确保一切仍然正常工作
-1. 如果相关，使用示例项目测试 CLI 功能
-1. 推送到你的 fork 并提交拉取请求
-1. 等待你的拉取请求被审查和合并。
+1. Fork 並複製儲存庫
+1. 配置和安裝相依套件：`uv sync`
+1. 確保 CLI 在你的機器上正常工作：`uv run specify-tw --help`
+1. 建立新分支：`git checkout -b my-branch-name`
+1. 進行變更，新增測試，並確保一切仍然正常工作
+1. 如果相關，使用範例專案測試 CLI 功能
+1. 推送到你的 fork 並提交拉取請求
+1. 等待你的拉取請求被審查和合併。
 
-以下是一些可以增加你的拉取请求被接受几率的方法：
+以下是一些可以增加你的拉取請求被接受機率的方法：
 
-- 遵循项目的编码规范。
-- 为新功能编写测试。
-- 如果你的更改影响用户可见的功能，请更新文档（`README.md`、`spec-driven.md`）。
-- 尽可能保持你的更改专注。如果你想进行多个相互不依赖的更改，考虑将它们作为单独的拉取请求提交。
-- 编写[良好的提交消息](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html)。
-- 使用 Spec-Driven Development 工作流测试你的更改以确保兼容性。
+- 遵循專案的編碼規範。
+- 為新功能編寫測試。
+- 如果你的變更影響使用者可見的功能，請更新文件（`README.md`、`spec-driven.md`）。
+- 盡可能保持你的變更專注。如果你想進行多個相互不依賴的變更，考慮將它們作為單獨的拉取請求提交。
+- 編寫[良好的提交訊息](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html)。
+- 使用 Spec-Driven Development 工作流程測試你的變更以確保相容性。
 
-## 开发工作流
+## 開發工作流程
 
-在处理 spec-kit 时：
+在處理 spec-kit 時：
 
-1. 在你选择的编码代理中使用 `specify-cn` CLI 命令（`/specify`、`/plan`、`/tasks`）测试更改
-2. 验证 `templates/` 目录中的模板是否正常工作
-3. 测试 `scripts/` 目录中的脚本功能
-4. 如果进行了重大的流程更改，确保更新内存文件（`memory/constitution.md`）
+1. 在你選擇的編碼代理中使用 `specify-tw` CLI 命令（`/specify`、`/plan`、`/tasks`）測試變更
+2. 驗證 `templates/` 目錄中的模板是否正常工作
+3. 測試 `scripts/` 目錄中的腳本功能
+4. 如果進行了重大的流程變更，確保更新記憶檔案（`memory/constitution.md`）
 
-## 资源
+## 資源
 
-- [Spec-Driven Development 方法论](./spec-driven.md)
-- [如何为开源做贡献](https://opensource.guide/how-to-contribute/)
-- [使用拉取请求](https://help.github.com/articles/about-pull-requests/)
-- [GitHub 帮助](https://help.github.com)
+- [Spec-Driven Development 方法論](./spec-driven.md)
+- [如何為開源做貢獻](https://opensource.guide/how-to-contribute/)
+- [使用拉取請求](https://help.github.com/articles/about-pull-requests/)
+- [GitHub 說明](https://help.github.com)

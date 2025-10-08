@@ -1,7 +1,12 @@
 [project]
-name = "specify-cn-cli"
-version = "0.0.55"
-description = "Specify CN CLI, part of GitHub Spec Kit CN. A tool to bootstrap your projects for Spec-Driven Development (SDD). Corresponds to upstream spec-kit v0.0.55."
+name = "specify-tw-cli"
+version = "0.0.57"
+description = "Specify TW CLI, part of GitHub Spec Kit TW. A tool to bootstrap your projects for Spec-Driven Development (SDD). Corresponds to upstream spec-kit v0.0.57."
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "Minidoracat", email = "minidoracat@gmail.com"}
+]
 requires-python = ">=3.11"
 dependencies = [
     "typer",
@@ -12,8 +17,13 @@ dependencies = [
     "truststore>=0.10.4",
 ]
 
+[project.urls]
+Homepage = "https://github.com/Minidoracat/spec-kit-tw"
+Repository = "https://github.com/Minidoracat/spec-kit-tw"
+Issues = "https://github.com/Minidoracat/spec-kit-tw/issues"
+
 [project.scripts]
-specify-cn = "specify_cli:main"
+specify-tw = "specify_cli:main"
 
 [build-system]
 requires = ["hatchling"]

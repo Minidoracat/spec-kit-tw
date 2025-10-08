@@ -13,13 +13,13 @@
 Specify CN CLI - Setup tool for Specify projects
 
 Usage:
-    uvx specify-cn-cli.py init <project-name>
-    uvx specify-cn-cli.py init --here
+    uvx specify-tw-cli.py init <project-name>
+    uvx specify-tw-cli.py init --here
 
 Or install globally:
-    uv tool install --from specify-cn-cli.py specify-cn-cli
-    specify-cn init <project-name>
-    specify-cn init --here
+    uv tool install --from specify-tw-cli.py specify-tw-cli
+    specify-tw init <project-name>
+    specify-tw init --here
 """
 
 import os
@@ -92,7 +92,7 @@ BANNER = """
 ╚══════╝╚═╝     ╚══════╝ ╚═════╝╚═╝╚═╝        ╚═╝   
 """
 
-TAGLINE = "GitHub Spec Kit CN - Spec-Driven Development Toolkit"
+TAGLINE = "GitHub Spec Kit TW - 規範驅動開發工具包"
 class StepTracker:
     """Track and render hierarchical steps without emojis, similar to Claude Code tree output.
     Supports live auto-refresh via an attached refresh callback.
@@ -304,7 +304,7 @@ class BannerGroup(TyperGroup):
 
 
 app = typer.Typer(
-    name="specify-cn",
+    name="specify-tw",
     help="Setup tool for Specify spec-driven development projects",
     add_completion=False,
     invoke_without_command=True,
@@ -335,7 +335,7 @@ def callback(ctx: typer.Context):
     # (help is handled by BannerGroup)
     if ctx.invoked_subcommand is None and "--help" not in sys.argv and "-h" not in sys.argv:
         show_banner()
-        console.print(Align.center("[dim]Run 'specify-cn --help' for usage information[/dim]"))
+        console.print(Align.center("[dim]Run 'specify-tw --help' for usage information[/dim]"))
         console.print()
 
 
@@ -433,7 +433,7 @@ def init_git_repo(project_path: Path, quiet: bool = False) -> bool:
 
 def download_template_from_github(ai_assistant: str, download_dir: Path, *, script_type: str = "sh", verbose: bool = True, show_progress: bool = True, client: httpx.Client = None, debug: bool = False, github_token: str = None) -> Tuple[Path, dict]:
     repo_owner = "Linfee"
-    repo_name = "spec-kit-cn"
+    repo_name = "spec-kit-tw"
     if client is None:
         client = httpx.Client(verify=ssl_context)
     
@@ -1133,7 +1133,7 @@ def check():
 
     console.print(tracker.render())
 
-    console.print("\n[bold green]Specify CN CLI 已准备就绪！[/bold green]")
+    console.print("\n[bold green]Specify TW CLI 已准备就绪！[/bold green]")
 
     if not git_ok:
         console.print("[dim]提示：安装 git 用于仓库管理[/dim]")

@@ -3,56 +3,56 @@ name: translation-review
 description: "Review and fix translation quality between spec-kit original and Chinese localized version"
 ---
 
-用户输入可以直接由代理提供或作为命令参数提供给您 - 您**必须**考虑它（如果不为空）。
+使用者輸入可以直接由代理提供或作為命令引數提供給您 - 您**必須**考慮它（如果不為空）。
 
-用户输入：
+使用者輸入：
 
 $ARGUMENTS
 
-目标：系统性地review原项目spec-kit与中文版之间的翻译质量，识别并修复所有翻译错误、术语不一致和功能逻辑问题。
+目標：系統性地review原專案spec-kit與中文版之間的翻譯質量，識別並修復所有翻譯錯誤、術語不一致和功能邏輯問題。
 
-执行步骤：
+執行步驟：
 
-1. 验证环境准备：
-   - 确认spec-kit目录存在且包含原版文件
-   - 确认templates/和templates/commands/目录结构完整
-   - 确认memory/目录存在
+1. 驗證環境準備：
+   - 確認spec-kit目錄存在且包含原版檔案
+   - 確認templates/和templates/commands/目錄結構完整
+   - 確認memory/目錄存在
 
-2. 目录结构对比分析：
-   - 对比原项目spec-kit中templates和templates/commands目录结构
-   - 对比当前项目templates目录与原项目的差异
-   - 对比当前项目memory目录与原项目的差异
+2. 目錄結構對比分析：
+   - 對比原專案spec-kit中templates和templates/commands目錄結構
+   - 對比當前專案templates目錄與原專案的差異
+   - 對比當前專案memory目錄與原專案的差異
 
-3. 翻译质量系统性review：
-   - **templates目录核心文件**：
-     * agent-file-template.md - AI助手文件模板
-     * spec-template.md - 功能规范模板
-     * plan-template.md - 实施计划模板
-     * tasks-template.md - 任务生成模板
+3. 翻譯質量系統性review：
+   - **templates目錄核心檔案**：
+     * agent-file-template.md - AI助手檔案模板
+     * spec-template.md - 功能規範模板
+     * plan-template.md - 實施計劃模板
+     * tasks-template.md - 任務生成模板
 
-   - **templates/commands目录所有文件**：
+   - **templates/commands目錄所有檔案**：
      * analyze.md - 分析命令
      * clarify.md - 澄清命令
      * constitution.md - 章程命令
-     * implement.md - 实施命令
-     * plan.md - 计划命令
-     * specify.md - 规范命令
-     * tasks.md - 任务命令
+     * implement.md - 實施命令
+     * plan.md - 計劃命令
+     * specify.md - 規範命令
+     * tasks.md - 任務命令
 
-   - **memory目录**：
-     * constitution.md - 项目章程模板
+   - **memory目錄**：
+     * constitution.md - 專案章程模板
      
-   - 上述目录中新出现的一切没有提到的文件也需要review
+   - 上述目錄中新出現的一切沒有提到的檔案也需要review
 
-4. 输出结构化报告等待人类审核：
+4. 輸出結構化報告等待人類稽覈：
 
-行为规则：
-- 必须对比原版spec-kit中的对应文件
-- 使用Task工具并行对比
-- 所有文件翻译后，必须确保和原版表达是一样的语义，不能新增或减少内容
-- 所有的路径，不需要翻译，都以原版为准
-- 确保修复后的功能与原版完全一致
-- 优先修复功能逻辑错误
-- 保持技术术语的准确性
-- 输出详细的修复报告
-- 所有没有问题，请直接告诉用户
+行為規則：
+- 必須對比原版spec-kit中的對應檔案
+- 使用Task工具並行對比
+- 所有檔案翻譯後，必須確保和原版表達是一樣的語義，不能新增或減少內容
+- 所有的路徑，不需要翻譯，都以原版為準
+- 確保修復後的功能與原版完全一致
+- 優先修復功能邏輯錯誤
+- 保持技術術語的準確性
+- 輸出詳細的修復報告
+- 所有沒有問題，請直接告訴使用者
