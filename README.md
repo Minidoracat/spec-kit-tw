@@ -12,12 +12,12 @@
 
 [![Release](https://github.com/Minidoracat/spec-kit-tw/actions/workflows/release.yml/badge.svg)](https://github.com/Minidoracat/spec-kit-tw/actions/workflows/release.yml)
 [![GitHub Repo](https://img.shields.io/badge/GitHub-spec--kit--tw-blue?logo=github)](https://github.com/Minidoracat/spec-kit-tw.git)
-[![Current Version](https://img.shields.io/badge/version-0.0.57-green)](https://github.com/Minidoracat/spec-kit-tw/releases)
+[![Current Version](https://img.shields.io/badge/version-0.0.58-green)](https://github.com/Minidoracat/spec-kit-tw/releases)
 
 </div>
 
 > **💡 這是 [GitHub Spec Kit](https://github.com/github/spec-kit) 的官方中文複刻版本**
-> **🔄 對應原版提交**: [`e3b456c4c88be456ab190b3bebdb1e97c94fa6db`](https://github.com/github/spec-kit/commit/e3b456c4c88be456ab190b3bebdb1e97c94fa6db)
+> **🔄 對應原版提交**: [`89f4b0b38a42996376c0f083d47281a4c9196761`](https://github.com/github/spec-kit/commit/89f4b0b38a42996376c0f083d47281a4c9196761) (v0.0.58)
 > **📦 包名**: `specify-tw-cli` | **🛠️ 命令**: `specify-tw`
 
 > **⚠️ 保持同步**: 本專案將定期與原版保持同步，確保中文使用者能夠享受最新的功能和改進。
@@ -120,6 +120,19 @@ uvx --from git+https://github.com/Minidoracat/spec-kit-tw.git specify-tw init <P
 - 更好的工具管理：`uv tool list`、`uv tool upgrade`、`uv tool uninstall`
 - 更簡潔的 shell 配置
 
+**更新已安裝的工具**：
+
+```bash
+# 升級到最新版本
+uv tool upgrade specify-tw-cli
+
+# 或強制重新安裝
+uv tool install --force specify-tw-cli --from git+https://github.com/Minidoracat/spec-kit-tw.git
+
+# 驗證版本
+specify-tw --version
+```
+
 ### 2. 建立專案原則
 
 使用 **`/constitution`** 命令建立專案的指導原則和開發指南，這將指導所有後續開發。
@@ -182,6 +195,7 @@ uvx --from git+https://github.com/Minidoracat/spec-kit-tw.git specify-tw init <P
 | [Kilo Code](https://github.com/Kilo-Org/kilocode)         | ✅    |                                                                                    |
 | [Auggie CLI](https://docs.augmentcode.com/cli/overview)   | ✅    |                                                                                    |
 | [Roo Code](https://roocode.com/)                          | ✅    |                                                                                    |
+| [Amazon Q Developer CLI](https://aws.amazon.com/developer/learning/q-developer-cli/) | ✅ |                                                                                    |
 | [Codex CLI](https://github.com/openai/codex)              | ⚠️    | Codex [不支援](https://github.com/openai/codex/issues/2890) 斜線命令的自訂參數。 |
 
 ## 🔧 Specify TW CLI 參考
@@ -193,14 +207,14 @@ uvx --from git+https://github.com/Minidoracat/spec-kit-tw.git specify-tw init <P
 | 命令    | 描述                                                                                                                          |
 | ------- | ----------------------------------------------------------------------------------------------------------------------------- |
 | `init`  | 從最新模板初始化新的 Specify TW 專案                                                                                          |
-| `check` | 檢查已安裝的工具 (`git`, `claude`, `gemini`, `code`/`code-insiders`, `cursor-agent`, `windsurf`, `qwen`, `opencode`, `codex`) |
+| `check` | 檢查已安裝的工具 (`git`, `claude`, `gemini`, `code`/`code-insiders`, `cursor-agent`, `windsurf`, `qwen`, `opencode`, `codex`, `auggie`, `q`) |
 
 ### `specify-tw init` 參數和選項
 
 | 參數/選項              | 類型 | 描述                                                                                                                             |
 | ---------------------- | ---- | -------------------------------------------------------------------------------------------------------------------------------- |
 | `<project-name>`       | 參數 | 新專案目錄的名稱（使用 `--here` 時可選，或使用 `.` 表示目前目錄）                                                                                         |
-| `--ai`                 | 選項 | 要使用的AI助手：`claude`, `gemini`, `copilot`, `cursor`, `qwen`, `opencode`, `codex`, `windsurf`, `kilocode`, `auggie`, 或 `roo` |
+| `--ai`                 | 選項 | 要使用的AI助手：`claude`, `gemini`, `copilot`, `cursor`, `qwen`, `opencode`, `codex`, `windsurf`, `kilocode`, `auggie`, `roo`, 或 `q` |
 | `--script`             | 選項 | 要使用的指令碼變體：`sh` (bash/zsh) 或 `ps` (PowerShell)                                                                           |
 | `--ignore-agent-tools` | 標誌 | 跳過AI代理工具的檢查，如 Claude Code                                                                                             |
 | `--no-git`             | 標誌 | 跳過 git 儲存庫初始化                                                                                                              |
@@ -368,6 +382,7 @@ specify-tw init <project_name> --ai windsurf
 specify-tw init <project_name> --ai kilocode
 specify-tw init <project_name> --ai auggie
 specify-tw init <project_name> --ai roo
+specify-tw init <project_name> --ai q
 # 或在目前目錄：
 specify-tw init --here --ai claude
 specify-tw init --here --ai codex
