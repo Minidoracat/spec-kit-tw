@@ -63,20 +63,91 @@ def _github_auth_headers(cli_token: str | None = None) -> dict:
     return {"Authorization": f"Bearer {token}"} if token else {}
 
 # Constants
-AI_CHOICES = {
-    "copilot": "GitHub Copilot",
-    "claude": "Claude Code",
-    "gemini": "Gemini CLI",
-    "cursor": "Cursor",
-    "qwen": "Qwen Code",
-    "opencode": "opencode",
-    "codex": "Codex CLI",
-    "windsurf": "Windsurf",
-    "kilocode": "Kilo Code",
-    "auggie": "Auggie CLI",
-    "roo": "Roo Code",
-    "q": "Amazon Q Developer CLI",
+AGENT_CONFIG = {
+    "copilot": {
+        "name": "GitHub Copilot",
+        "folder": ".github/",
+        "install_url": None,  # IDE-based, no CLI check needed
+        "requires_cli": False,
+    },
+    "claude": {
+        "name": "Claude Code",
+        "folder": ".claude/",
+        "install_url": "https://docs.anthropic.com/en/docs/claude-code/setup",
+        "requires_cli": True,
+    },
+    "gemini": {
+        "name": "Gemini CLI",
+        "folder": ".gemini/",
+        "install_url": "https://github.com/google-gemini/gemini-cli",
+        "requires_cli": True,
+    },
+    "cursor-agent": {
+        "name": "Cursor",
+        "folder": ".cursor/",
+        "install_url": None,  # IDE-based
+        "requires_cli": False,
+    },
+    "qwen": {
+        "name": "Qwen Code",
+        "folder": ".qwen/",
+        "install_url": "https://github.com/QwenLM/qwen-code",
+        "requires_cli": True,
+    },
+    "opencode": {
+        "name": "opencode",
+        "folder": ".opencode/",
+        "install_url": "https://opencode.ai",
+        "requires_cli": True,
+    },
+    "codex": {
+        "name": "Codex CLI",
+        "folder": ".codex/",
+        "install_url": "https://github.com/openai/codex",
+        "requires_cli": True,
+    },
+    "windsurf": {
+        "name": "Windsurf",
+        "folder": ".windsurf/",
+        "install_url": None,  # IDE-based
+        "requires_cli": False,
+    },
+    "kilocode": {
+        "name": "Kilo Code",
+        "folder": ".kilocode/",
+        "install_url": None,  # IDE-based
+        "requires_cli": False,
+    },
+    "auggie": {
+        "name": "Auggie CLI",
+        "folder": ".augment/",
+        "install_url": "https://docs.augmentcode.com/cli/setup-auggie/install-auggie-cli",
+        "requires_cli": True,
+    },
+    "codebuddy": {
+        "name": "CodeBuddy",
+        "folder": ".codebuddy/",
+        "install_url": "https://www.codebuddy.ai",
+        "requires_cli": True,
+    },
+    "roo": {
+        "name": "Roo Code",
+        "folder": ".roo/",
+        "install_url": None,  # IDE-based
+        "requires_cli": False,
+    },
+    "q": {
+        "name": "Amazon Q Developer CLI",
+        "folder": ".amazonq/",
+        "install_url": "https://aws.amazon.com/developer/learning/q-developer-cli/",
+        "requires_cli": True,
+    },
 }
+
+# 從 AGENT_CONFIG 生成輔助字典
+AI_CHOICES = {key: config["name"] for key, config in AGENT_CONFIG.items()}
+AGENT_FOLDER_MAP = {key: config["folder"] for key, config in AGENT_CONFIG.items()}
+
 # Add script type choices
 SCRIPT_TYPE_CHOICES = {"sh": "POSIX Shell (bash/zsh)", "ps": "PowerShell"}
 
@@ -369,9 +440,18 @@ def check_tool_for_tracker(tool: str, tracker: StepTracker) -> bool:
         return False
 
 
-def check_tool(tool: str, install_hint: str) -> bool:
-    """Check if a tool is installed."""
-    
+def check_tool(tool: str, install_hint: str = None, tracker: StepTracker = None) -> bool:
+    """Check if a tool is installed, optionally updating tracker.
+
+    Args:
+        tool: The tool name to check
+        install_hint: Optional install URL (for backwards compatibility, not used with tracker)
+        tracker: Optional StepTracker to update with results
+
+    Returns:
+        True if tool is found, False otherwise
+    """
+
     # Special handling for Claude CLI after `claude migrate-installer`
     # See: https://github.com/github/spec-kit/issues/123
     # The migrate-installer command REMOVES the original executable from PATH
@@ -379,11 +459,17 @@ def check_tool(tool: str, install_hint: str) -> bool:
     # This path should be prioritized over other claude executables in PATH
     if tool == "claude":
         if CLAUDE_LOCAL_PATH.exists() and CLAUDE_LOCAL_PATH.is_file():
+            if tracker:
+                tracker.complete(tool, "可用")
             return True
-    
+
     if shutil.which(tool):
+        if tracker:
+            tracker.complete(tool, "可用")
         return True
     else:
+        if tracker:
+            tracker.error(tool, "未找到")
         return False
 
 
@@ -749,7 +835,7 @@ def ensure_executable_scripts(project_path: Path, tracker: StepTracker | None = 
 @app.command()
 def init(
     project_name: str = typer.Argument(None, help="新專案目錄名稱（使用 --here 時可選，或使用 '.' 表示目前目錄）"),
-    ai_assistant: str = typer.Option(None, "--ai", help="使用的 AI 助手：claude, gemini, copilot, cursor, qwen, opencode, codex, windsurf, kilocode, auggie, 或 q"),
+    ai_assistant: str = typer.Option(None, "--ai", help="使用的 AI 助手：claude, gemini, copilot, cursor-agent, qwen, opencode, codex, windsurf, kilocode, auggie, codebuddy, roo, 或 q"),
     script_type: str = typer.Option(None, "--script", help="使用的腳本類型：sh 或 ps"),
     ignore_agent_tools: bool = typer.Option(False, "--ignore-agent-tools", help="跳過 AI 代理工具檢查（如 Claude Code）"),
     no_git: bool = typer.Option(False, "--no-git", help="跳過 git 儲存庫初始化"),
@@ -764,7 +850,7 @@ def init(
 
     此命令將會：
     1. 檢查必要工具是否已安裝（git 為可選）
-    2. 讓你選擇 AI 助手（Claude Code、Gemini CLI、GitHub Copilot、Cursor、Qwen Code、opencode、Codex CLI、Windsurf、Kilo Code、Auggie CLI 或 Amazon Q Developer CLI）
+    2. 讓你選擇 AI 助手（Claude Code、Gemini CLI、GitHub Copilot、Cursor、Qwen Code、opencode、Codex CLI、Windsurf、Kilo Code、Auggie CLI、CodeBuddy、Roo Code 或 Amazon Q Developer CLI）
     3. 從 GitHub 下載適當的模板
     4. 將模板解壓到新專案目錄或目前目錄
     5. 初始化新的 git 儲存庫（如果未使用 --no-git 且不存在儲存庫）
@@ -775,12 +861,15 @@ def init(
         specify-tw init my-project --ai claude
         specify-tw init my-project --ai gemini
         specify-tw init my-project --ai copilot --no-git
-        specify-tw init my-project --ai cursor
+        specify-tw init my-project --ai cursor-agent
         specify-tw init my-project --ai qwen
         specify-tw init my-project --ai opencode
         specify-tw init my-project --ai codex
         specify-tw init my-project --ai windsurf
         specify-tw init my-project --ai auggie
+        specify-tw init my-project --ai codebuddy
+        specify-tw init my-project --ai roo
+        specify-tw init my-project --ai q
         specify-tw init --ignore-agent-tools my-project
         specify-tw init . --ai claude         # 在目前目錄初始化
         specify-tw init .                     # 在目前目錄初始化（互動式選擇 AI）
@@ -879,51 +968,25 @@ def init(
     
     # Check agent tools unless ignored
     if not ignore_agent_tools:
-        agent_tool_missing = False
-        install_url = ""
-        if selected_ai == "claude":
-            if not check_tool("claude", "https://docs.anthropic.com/en/docs/claude-code/setup"):
-                install_url = "https://docs.anthropic.com/en/docs/claude-code/setup"
-                agent_tool_missing = True
-        elif selected_ai == "gemini":
-            if not check_tool("gemini", "https://github.com/google-gemini/gemini-cli"):
-                install_url = "https://github.com/google-gemini/gemini-cli"
-                agent_tool_missing = True
-        elif selected_ai == "qwen":
-            if not check_tool("qwen", "https://github.com/QwenLM/qwen-code"):
-                install_url = "https://github.com/QwenLM/qwen-code"
-                agent_tool_missing = True
-        elif selected_ai == "opencode":
-            if not check_tool("opencode", "https://opencode.ai"):
-                install_url = "https://opencode.ai"
-                agent_tool_missing = True
-        elif selected_ai == "codex":
-            if not check_tool("codex", "https://github.com/openai/codex"):
-                install_url = "https://github.com/openai/codex"
-                agent_tool_missing = True
-        elif selected_ai == "auggie":
-            if not check_tool("auggie", "https://docs.augmentcode.com/cli/setup-auggie/install-auggie-cli"):
-                install_url = "https://docs.augmentcode.com/cli/setup-auggie/install-auggie-cli"
-                agent_tool_missing = True
-        elif selected_ai == "q":
-            if not check_tool("q", "https://github.com/aws/amazon-q-developer-cli"):
-                install_url = "https://aws.amazon.com/developer/learning/q-developer-cli/"
-                agent_tool_missing = True
-        # GitHub Copilot and Cursor checks are not needed as they're typically available in supported IDEs
+        agent_config = AGENT_CONFIG.get(selected_ai)
+        if agent_config and agent_config["requires_cli"]:
+            # Determine the CLI tool name to check
+            cli_tool = selected_ai
 
-        if agent_tool_missing:
-            error_panel = Panel(
-                f"未找到 [cyan]{selected_ai}[/cyan]\n"
-                f"安裝位置：[cyan]{install_url}[/cyan]\n"
-                f"需要 {AI_CHOICES[selected_ai]} 才能繼續此專案類型。\n\n"
-                "提示：使用 [cyan]--ignore-agent-tools[/cyan] 跳過此檢查",
-                title="[red]代理程式偵測錯誤[/red]",
-                border_style="red",
-                padding=(1, 2)
-            )
-            console.print()
-            console.print(error_panel)
-            raise typer.Exit(1)
+            install_url = agent_config["install_url"]
+            if not check_tool(cli_tool, install_url):
+                error_panel = Panel(
+                    f"未找到 [cyan]{selected_ai}[/cyan]\n"
+                    f"安裝位置：[cyan]{install_url}[/cyan]\n"
+                    f"需要 {AI_CHOICES[selected_ai]} 才能繼續此專案類型。\n\n"
+                    "提示：使用 [cyan]--ignore-agent-tools[/cyan] 跳過此檢查",
+                    title="[red]代理程式偵測錯誤[/red]",
+                    border_style="red",
+                    padding=(1, 2)
+                )
+                console.print()
+                console.print(error_panel)
+                raise typer.Exit(1)
     
     # Determine script type (explicit, interactive, or OS default)
     if script_type:
@@ -1022,23 +1085,8 @@ def init(
     console.print("\n[bold green]專案就緒。[/bold green]")
     
     # Agent folder security notice
-    agent_folder_map = {
-        "claude": ".claude/",
-        "gemini": ".gemini/",
-        "cursor": ".cursor/",
-        "qwen": ".qwen/",
-        "opencode": ".opencode/",
-        "codex": ".codex/",
-        "windsurf": ".windsurf/",
-        "kilocode": ".kilocode/",
-        "auggie": ".augment/",
-        "copilot": ".github/",
-        "roo": ".roo/",
-        "q": ".amazonq/"
-    }
-    
-    if selected_ai in agent_folder_map:
-        agent_folder = agent_folder_map[selected_ai]
+    if selected_ai in AGENT_FOLDER_MAP:
+        agent_folder = AGENT_FOLDER_MAP[selected_ai]
         security_notice = Panel(
             f"某些代理程式可能會在專案內的代理程式資料夾中儲存憑證、身份驗證令牌或其他識別和私有工件。\n"
             f"考慮將 [cyan]{agent_folder}[/cyan]（或其部分）加入到 [cyan].gitignore[/cyan] 以防止意外洩露憑證。",
@@ -1111,33 +1159,26 @@ def check():
 
     tracker = StepTracker("檢查可用工具")
 
+    # Add Git first
     tracker.add("git", "Git 版本控制")
-    tracker.add("claude", "Claude Code CLI")
-    tracker.add("gemini", "Gemini CLI")
-    tracker.add("qwen", "Qwen Code CLI")
-    tracker.add("code", "Visual Studio Code")
-    tracker.add("code-insiders", "Visual Studio Code Insiders")
-    tracker.add("cursor-agent", "Cursor IDE 代理程式")
-    tracker.add("windsurf", "Windsurf IDE")
-    tracker.add("kilocode", "Kilo Code IDE")
-    tracker.add("opencode", "opencode")
-    tracker.add("codex", "Codex CLI")
-    tracker.add("auggie", "Auggie CLI")
-    tracker.add("q", "Amazon Q Developer CLI")
-
     git_ok = check_tool_for_tracker("git", tracker)
-    claude_ok = check_tool_for_tracker("claude", tracker)
-    gemini_ok = check_tool_for_tracker("gemini", tracker)
-    qwen_ok = check_tool_for_tracker("qwen", tracker)
+
+    # Add all agents from AGENT_CONFIG
+    agent_results = {}
+    for agent_key, agent_config in AGENT_CONFIG.items():
+        agent_name = agent_config["name"]
+        # Use the agent key as CLI tool name
+        cli_tool = agent_key
+
+        tracker.add(cli_tool, agent_name)
+        agent_results[agent_key] = check_tool_for_tracker(cli_tool, tracker)
+
+    # Check VS Code variants (not in agent config)
+    tracker.add("code", "Visual Studio Code")
     code_ok = check_tool_for_tracker("code", tracker)
+
+    tracker.add("code-insiders", "Visual Studio Code Insiders")
     code_insiders_ok = check_tool_for_tracker("code-insiders", tracker)
-    cursor_ok = check_tool_for_tracker("cursor-agent", tracker)
-    windsurf_ok = check_tool_for_tracker("windsurf", tracker)
-    kilocode_ok = check_tool_for_tracker("kilocode", tracker)
-    opencode_ok = check_tool_for_tracker("opencode", tracker)
-    codex_ok = check_tool_for_tracker("codex", tracker)
-    auggie_ok = check_tool_for_tracker("auggie", tracker)
-    q_ok = check_tool_for_tracker("q", tracker)
 
     console.print(tracker.render())
 
@@ -1145,7 +1186,8 @@ def check():
 
     if not git_ok:
         console.print("[dim]提示：安裝 git 用於儲存庫管理[/dim]")
-    if not (claude_ok or gemini_ok or cursor_ok or qwen_ok or windsurf_ok or kilocode_ok or opencode_ok or codex_ok or auggie_ok or q_ok):
+
+    if not any(agent_results.values()):
         console.print("[dim]提示：安裝 AI 助手以獲得最佳體驗[/dim]")
 
 

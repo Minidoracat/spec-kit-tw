@@ -74,9 +74,11 @@ uvx --from git+https://github.com/Minidoracat/spec-kit-tw spec-kit-tw init
 | 原版追蹤 | `spec-kit/`                   | 不提交   | 不適用              |
 
 ### 版本對應關係
-- 當前版本：查看 `pyproject.toml` 中的 `version` 欄位
-- 原版版本：查看 `pyproject.toml` 中的 `description` 欄位
-- 同步狀態：查看 `CHANGELOG.md` 中的同步記錄
+- **當前版本**：v0.0.64（查看 `pyproject.toml` 中的 `version` 欄位）
+- **原版版本**：v0.0.64（查看 `pyproject.toml` 中的 `description` 欄位）
+- **同步狀態**：已完成核心功能同步（查看 `CHANGELOG.md` 中的同步記錄）
+- **同步日期**：2025-01-16
+- **同步範圍**：v0.0.58 → v0.0.64（7個版本，14個檔案，+477/-283行）
 
 ### 緊急情況處理
 1. **同步衝突**：優先保留原版功能，僅在本地化內容上保留修改
@@ -140,20 +142,22 @@ uvx --from git+https://github.com/Minidoracat/spec-kit-tw spec-kit-tw init
 - 📝 **說明文件**：使用說明、操作指導、除錯資訊
 - 📝 **輸出訊息**：CLI 輸出、進度顯示、工具檢查結果
 
-### AI 助手支援
-| 助手           | CLI 工具       | 目錄格式               | 命令格式 | 類型   |
-| -------------- | -------------- | ---------------------- | -------- | ------ |
-| Claude Code    | `claude`       | `.claude/commands/`    | Markdown | CLI    |
-| Gemini CLI     | `gemini`       | `.gemini/commands/`    | TOML     | CLI    |
-| GitHub Copilot | 無（IDE 整合） | `.github/prompts/`     | Markdown | IDE    |
-| Cursor         | `cursor-agent` | `.cursor/commands/`    | Markdown | CLI    |
-| Qwen Code      | `qwen`         | `.qwen/commands/`      | TOML     | CLI    |
-| opencode       | `opencode`     | `.opencode/command/`   | Markdown | CLI    |
-| Windsurf       | 無（IDE 整合） | `.windsurf/workflows/` | Markdown | IDE    |
-| Codex          | `codex`        | `.codex/`              | Markdown | CLI    |
-| Kilocode       | `kilocode`     | `.kilocode/`           | Markdown | CLI    |
-| Auggie         | `auggie`       | `.auggie/`             | Markdown | CLI    |
-| Roo Code       | `roo`          | `.roo/`                | Markdown | CLI    |
+### AI 助手支援（v0.0.64更新）
+| 助手                    | CLI 工具       | 目錄格式               | 命令格式 | 類型   | 版本    |
+| ----------------------- | -------------- | ---------------------- | -------- | ------ | ------- |
+| Claude Code             | `claude`       | `.claude/commands/`    | Markdown | CLI    | 基線    |
+| Gemini CLI              | `gemini`       | `.gemini/commands/`    | TOML     | CLI    | 基線    |
+| GitHub Copilot          | 無（IDE 整合） | `.github/prompts/`     | Markdown | IDE    | 基線    |
+| Cursor                  | `cursor-agent` | `.cursor/commands/`    | Markdown | CLI    | 基線    |
+| Qwen Code               | `qwen`         | `.qwen/commands/`      | TOML     | CLI    | 基線    |
+| opencode                | `opencode`     | `.opencode/command/`   | Markdown | CLI    | 基線    |
+| Windsurf                | 無（IDE 整合） | `.windsurf/workflows/` | Markdown | IDE    | 基線    |
+| Codex                   | `codex`        | `.codex/`              | Markdown | CLI    | 基線    |
+| Kilocode                | `kilocode`     | `.kilocode/`           | Markdown | CLI    | 基線    |
+| Auggie                  | `auggie`       | `.auggie/`             | Markdown | CLI    | 基線    |
+| **CodeBuddy**           | `codebuddy`    | `.codebuddy/`          | Markdown | CLI    | v0.0.64 |
+| Roo Code                | `roo`          | `.roo/`                | Markdown | CLI    | 基線    |
+| Amazon Q Developer CLI  | `q`            | `AGENTS.md`            | Markdown | CLI    | 基線    |
 
 ### 模板系統
 
@@ -423,4 +427,4 @@ uvx --from git+https://github.com/Minidoracat/spec-kit-tw spec-kit-tw init
 3. **結構清晰**：維護良好的文件結構，便於快速查找
 4. **內容完整**：確保所有重要的維護資訊都已包含
 
-**最後更新**：2025-01-09 - 完成 v0.0.57 版本同步與繁體中文轉換
+**最後更新**：2025-01-16 - 完成 v0.0.64 版本同步與核心重構（AGENT_CONFIG架構）

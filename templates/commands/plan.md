@@ -20,7 +20,7 @@ $ARGUMENTS
 
 1. **設定**：從儲存庫根目錄執行 `{SCRIPT}` 並解析 JSON 以取得 FEATURE_SPEC、IMPL_PLAN、SPECS_DIR、BRANCH。對於參數中包含單引號的情況（如 "I'm Groot"），請使用轉義語法：例如 'I'\''m Groot'（或者如果可能，使用雙引號："I'm Groot"）。
 
-2. **載入上下文**：讀取 FEATURE_SPEC 和 `.specify/memory/constitution.md`。載入 IMPL_PLAN 範本（已複製）。
+2. **載入上下文**：讀取 FEATURE_SPEC 和 `/memory/constitution.md`。載入 IMPL_PLAN 範本（已複製）。
 
 3. **執行計劃工作流程**：遵循 IMPL_PLAN 範本中的結構來：
    - 填寫技術上下文（將未知標記為「NEEDS CLARIFICATION」）

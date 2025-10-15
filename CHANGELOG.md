@@ -5,6 +5,89 @@
 格式基於 [Keep a Changelog](https://keepachangelog.com/zh-TW/1.0.0/)，
 並且本專案遵循[語義化版本](https://semver.org/lang/zh-TW/)。
 
+## [0.0.64] - 2025-10-16
+
+### 同步原版
+- 同步原版 v0.0.59 至 v0.0.64（7個版本，6天內發布）
+- 時間範圍：2025-01-10 至 2025-01-16
+- 同步提交區間：[89f4b0b...9dd20e1](https://github.com/github/spec-kit/compare/89f4b0b...9dd20e1)
+- 詳細分析報告：見 `spec-kit-0.0.58-to-0.0.64-update-report.md`
+
+### 核心架構重構
+- **AGENT_CONFIG 架構**：
+  - 從簡單的 `AI_CHOICES` 字典重構為結構化的 `AGENT_CONFIG`
+  - 新增 `name`、`folder`、`install_url`、`requires_cli` 欄位
+  - 統一使用實際 CLI 工具名稱作為鍵值（如 "cursor-agent"）
+  - 簡化特殊情況處理邏輯
+
+- **Git 錯誤處理增強**：
+  - `init_git_repo()` 回傳型別改為 `Tuple[bool, Optional[str]]`
+  - 提供詳細的錯誤訊息而非布林值
+  - 改善錯誤診斷和使用者體驗
+
+- **工具檢查統一化**：
+  - `check_tool()` 函式支援可選的 tracker 參數
+  - 統一進度追蹤介面
+  - 簡化程式碼重複
+
+### 新增 AI 助手支援
+- **CodeBuddy**：
+  - 新增 CodeBuddy 作為第 12 個支援的 AI 助手
+  - 配置資訊：`.codebuddy/` 目錄，需要 CLI 工具
+  - 安裝指引：https://www.codebuddy.ai
+  - 新增工具檢查邏輯和安裝說明
+
+### 命令模板增強（繁體中文翻譯）
+- **plan.md**：
+  - 修正 constitution.md 路徑引用（從 `.specify/memory/` 改為 `/memory/`）
+
+- **clarify.md**：
+  - 新增 AI 智慧推薦系統
+  - 多選題自動分析並推薦最佳選項
+  - 簡答題提供建議答案
+  - 支援「是」、「推薦」、「建議」快速確認
+  - 格式化推薦展示：`**推薦：** 選項 [X] - <理由>`
+
+- **implement.md**：
+  - 新增「專案設定驗證」步驟（Step 4）
+  - 自動偵測並建立 .gitignore、.dockerignore、.eslintignore 等
+  - 技術堆疊特定模式（Node.js、Python、Java、C#/.NET、Go）
+  - 工具特定模式（Docker、ESLint、Prettier、Terraform）
+  - 智慧追加缺失模式，避免覆蓋現有配置
+
+- **tasks.md**：
+  - 新增「檢查清單格式（必需）」嚴格規範
+  - 標準化任務格式：`- [ ] [TaskID] [P?] [Story?] Description with file path`
+  - 提供正確與錯誤範例說明
+  - 明確定義任務組件：核取方塊、ID、平行標記、故事標籤、描述
+  - 階段結構清晰化：Setup → Foundational → User Stories → Polish
+
+### 文件更新
+- 新增 `spec-kit-0.0.58-to-0.0.64-update-report.md` 詳細分析報告
+- 新增 `SYNC-PROGRESS.md` 同步進度追蹤文件
+- 更新 `CLAUDE.md` 專案記憶檔案（v0.0.64 架構資訊）
+
+### 技術改進
+- 14 個檔案變更，新增 477 行，刪除 283 行
+- 完整繁體中文本地化所有新功能和訊息
+- 改善 CLI 輸出的可讀性和一致性
+- 優化模板結構以符合最新標準
+
+### 貢獻者（原版）
+感謝以下貢獻者對 spec-kit v0.0.59-v0.0.64 的貢獻：
+- @irthomasthomas
+- @hamelsmu
+
+### 已知問題
+- 核心程式碼 `src/specify_cli/__init__.py` 尚未完成 AGENT_CONFIG 重構（進行中）
+- 腳本檔案 `scripts/` 尚未同步 CodeBuddy 支援（待處理）
+
+### 下一步計劃
+- 完成核心程式碼的 AGENT_CONFIG 架構遷移
+- 同步所有腳本檔案以支援 CodeBuddy
+- 更新 README.md 和 AGENTS.md 文件
+- 執行完整功能測試驗證
+
 ## [0.0.58] - 2025-10-09
 
 ### 同步原版

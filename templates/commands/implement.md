@@ -54,27 +54,60 @@ $ARGUMENTS
    - **如果存在**：讀取 research.md 以取得技術決策和約束
    - **如果存在**：讀取 quickstart.md 以取得整合情境
 
-4. 解析 tasks.md 結構並提取：
+4. **專案設定驗證**：
+   - **必需**：根據實際專案設定建立/驗證忽略檔案：
+
+   **偵測與建立邏輯**：
+   - 檢查以下命令是否成功以判斷儲存庫是否為 Git 儲存庫（如果是則建立/驗證 .gitignore）：
+
+     ```sh
+     git rev-parse --git-dir 2>/dev/null
+     ```
+   - 檢查 Dockerfile* 是否存在或 plan.md 中提到 Docker → 建立/驗證 .dockerignore
+   - 檢查 .eslintrc* 或 eslint.config.* 是否存在 → 建立/驗證 .eslintignore
+   - 檢查 .prettierrc* 是否存在 → 建立/驗證 .prettierignore
+   - 檢查 .npmrc 或 package.json 是否存在 → 建立/驗證 .npmignore（如果發布套件）
+   - 檢查 terraform 檔案 (*.tf) 是否存在 → 建立/驗證 .terraformignore
+   - 檢查是否需要 .helmignore（helm charts 存在） → 建立/驗證 .helmignore
+
+   **如果忽略檔案已存在**：驗證其包含必要模式，僅附加缺失的關鍵模式
+   **如果忽略檔案不存在**：根據偵測到的技術建立完整的模式集
+
+   **依技術堆疊的常見模式**（從 plan.md 技術堆疊）：
+   - **Node.js/JavaScript**: `node_modules/`, `dist/`, `build/`, `*.log`, `.env*`
+   - **Python**: `__pycache__/`, `*.pyc`, `.venv/`, `venv/`, `dist/`, `*.egg-info/`
+   - **Java**: `target/`, `*.class`, `*.jar`, `.gradle/`, `build/`
+   - **C#/.NET**: `bin/`, `obj/`, `*.user`, `*.suo`, `packages/`
+   - **Go**: `*.exe`, `*.test`, `vendor/`, `*.out`
+   - **通用**: `.DS_Store`, `Thumbs.db`, `*.tmp`, `*.swp`, `.vscode/`, `.idea/`
+
+   **工具特定模式**：
+   - **Docker**: `node_modules/`, `.git/`, `Dockerfile*`, `.dockerignore`, `*.log*`, `.env*`, `coverage/`
+   - **ESLint**: `node_modules/`, `dist/`, `build/`, `coverage/`, `*.min.js`
+   - **Prettier**: `node_modules/`, `dist/`, `build/`, `coverage/`, `package-lock.json`, `yarn.lock`, `pnpm-lock.yaml`
+   - **Terraform**: `.terraform/`, `*.tfstate*`, `*.tfvars`, `.terraform.lock.hcl`
+
+5. 解析 tasks.md 結構並提取：
    - **任務階段**：設定、測試、核心、整合、完善
    - **任務依賴項**：順序與平行執行規則
    - **任務詳細資訊**：ID、描述、檔案路徑、平行標記 [P]
    - **執行流程**：順序和依賴需求
 
-5. 按照任務計劃執行實作：
+6. 按照任務計劃執行實作：
    - **階段性執行**：在進入下一階段之前完成每個階段
    - **尊重依賴項**：按順序執行順序任務，平行任務 [P] 可以一起執行
    - **遵循 TDD 方法**：在其對應的實作任務之前執行測試任務
    - **基於檔案的協調**：影響相同檔案的任務必須按順序執行
    - **驗證檢查點**：在繼續之前驗證每個階段的完成
 
-6. 實作執行規則：
+7. 實作執行規則：
    - **首先設定**：初始化專案結構、依賴項、配置
    - **程式碼之前測試**：如果你需要為合約、實體和整合情境撰寫測試
    - **核心開發**：實作模型、服務、CLI 命令、端點
    - **整合工作**：資料庫連線、中介軟體、記錄、外部服務
    - **完善和驗證**：單元測試、效能最佳化、文件
 
-7. 進度追蹤和錯誤處理：
+8. 進度追蹤和錯誤處理：
    - 在每個完成的任務後報告進度
    - 如果任何非平行任務失敗則停止執行
    - 對於平行任務 [P]，繼續成功的任務，報告失敗的任務
@@ -82,7 +115,7 @@ $ARGUMENTS
    - 如果實作無法進行，建議後續步驟
    - **重要** 對於已完成的任務，確保在任務檔案中將任務標記為 [X]。
 
-8. 完成驗證：
+9. 完成驗證：
    - 驗證所有必需任務已完成
    - 檢查已實作的功能與原始規格匹配
    - 驗證測試通過且覆蓋率滿足需求

@@ -76,9 +76,46 @@ tasks.md 應該立即可執行 - 每個任務必須足夠具體，以便 LLM 無
 
 ## 任務生成規則
 
-**重要**：測試是可選的。僅在使用者在功能規格中明確請求測試或 TDD 方法時生成測試任務。
-
 **關鍵**：任務必須按使用者故事組織，以實現獨立的實作和測試。
+
+**測試是可選的**：僅在功能規格中明確請求或使用者要求 TDD 方法時生成測試任務。
+
+### 檢查清單格式（必需）
+
+每個任務都必須嚴格遵循此格式：
+
+```text
+- [ ] [TaskID] [P?] [Story?] Description with file path
+```
+
+**格式組成**：
+
+1. **核取方塊**：必須以 `- [ ]` 開頭（Markdown 核取方塊）
+2. **任務 ID**：依執行順序編號（T001、T002、T003...）
+3. **[P] 標記**：僅當任務可平行執行時包含（不同檔案、無依賴於未完成的任務）
+4. **[Story] 標籤**：僅用於使用者故事階段任務
+   - 格式：[US1]、[US2]、[US3] 等（對應 spec.md 中的使用者故事）
+   - Setup 階段：無故事標籤
+   - Foundational 階段：無故事標籤
+   - User Story 階段：必須有故事標籤
+   - Polish 階段：無故事標籤
+5. **描述**：清晰的操作說明與確切檔案路徑
+
+**正確範例**：
+
+- ✅ 正確：`- [ ] T001 Create project structure per implementation plan`
+- ✅ 正確：`- [ ] T005 [P] Implement authentication middleware in src/middleware/auth.py`
+- ✅ 正確：`- [ ] T012 [P] [US1] Create User model in src/models/user.py`
+- ✅ 正確：`- [ ] T014 [US1] Implement UserService in src/services/user_service.py`
+
+**錯誤範例**：
+
+- ❌ 錯誤：`- [ ] Create User model`（缺少 ID 和 Story 標籤）
+- ❌ 錯誤：`T001 [US1] Create model`（缺少核取方塊）
+- ❌ 錯誤：`- [ ] [US1] Create User model`（缺少 Task ID）
+- ❌ 錯誤：`- [ ] T001 [US1] Create model`（缺少檔案路徑）
+
+### 任務組織
 
 1. **從使用者故事（spec.md）** - 主要組織：
    - 每個使用者故事（P1、P2、P3...）都有自己的階段
@@ -101,14 +138,13 @@ tasks.md 應該立即可執行 - 每個任務必須足夠具體，以便 LLM 無
 4. **從設定/基礎架構**：
    - 共享基礎架構 → 設定階段（階段 1）
    - 基礎/阻塞任務 → 基礎階段（階段 2）
-     - 範例：資料庫架構設定、身份驗證框架、核心函式庫、基礎配置
-     - 這些必須在任何使用者故事可以實作之前完成
    - 故事特定的設定 → 在該故事的階段內
 
-5. **排序**：
-   - 階段 1：設定（專案初始化）
-   - 階段 2：基礎（阻塞先決條件 - 必須在使用者故事之前完成）
-   - 階段 3+：按優先順序排列的使用者故事（P1、P2、P3...）
-     - 在每個故事中：測試（如果請求）→ 模型 → 服務 → 端點 → 整合
-   - 最終階段：完善和跨領域關注點
-   - 每個使用者故事階段應該是一個完整的、可獨立測試的增量
+### 階段結構
+
+- **階段 1**：Setup（專案初始化）
+- **階段 2**：Foundational（阻塞性前置條件 - 必須在使用者故事之前完成）
+- **階段 3+**：User Stories（依優先順序：P1、P2、P3...）
+  - 每個故事內部：Tests（如果需要）→ Models → Services → Endpoints → Integration
+  - 每個階段應該是完整且可獨立測試的增量
+- **Final Phase**：Polish & Cross-Cutting Concerns
