@@ -5,6 +5,34 @@
 格式基於 [Keep a Changelog](https://keepachangelog.com/zh-TW/1.0.0/)，
 並且本專案遵循[語義化版本](https://semver.org/lang/zh-TW/)。
 
+## [未發布] - 2025-01-17
+
+### 繁體中文版本獨有功能
+- **新增 `--version` / `-v` 選項**：
+  - 顯示 Specify TW CLI 版本資訊
+  - 顯示對應的原版 spec-kit 版本
+  - 使用方式：
+    ```bash
+    specify-tw --version
+    specify-tw -v
+    ```
+  - 輸出範例：
+    ```
+    Specify TW CLI 版本 0.0.69
+    對應原版 spec-kit v0.0.69
+    ```
+
+### 技術細節
+- 在 `src/specify_cli/__init__.py` 中新增 `__version__` 常數
+- 新增 `version_callback()` 函式處理版本顯示
+- 更新 `app.callback()` 加入 `--version` 選項參數
+- 使用 Typer 的 `is_eager=True` 確保版本選項優先處理
+
+### 備註
+原版 spec-kit 目前尚未實作 `--version` 功能，此為繁體中文版本為改善使用者體驗而獨立新增的功能。
+
+---
+
 ## [0.0.69] - 2025-01-17
 
 ### 同步原版

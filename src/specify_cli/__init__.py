@@ -53,6 +53,9 @@ import truststore
 ssl_context = truststore.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
 client = httpx.Client(verify=ssl_context)
 
+# Version information
+__version__ = "0.0.69"
+
 def _github_token(cli_token: str | None = None) -> str | None:
     """Return sanitized GitHub token (cli arg takes precedence) or None."""
     return ((cli_token or os.getenv("GH_TOKEN") or os.getenv("GITHUB_TOKEN") or "").strip()) or None
@@ -400,8 +403,19 @@ def show_banner():
     console.print()
 
 
+def version_callback(value: bool):
+    """Print version and exit."""
+    if value:
+        console.print(f"[cyan]Specify TW CLI[/cyan] 版本 [green]{__version__}[/green]")
+        console.print(f"[dim]對應原版 spec-kit v{__version__}[/dim]")
+        raise typer.Exit()
+
+
 @app.callback()
-def callback(ctx: typer.Context):
+def callback(
+    ctx: typer.Context,
+    version: bool = typer.Option(None, "--version", "-v", help="顯示版本資訊", callback=version_callback, is_eager=True)
+):
     """Show banner when no subcommand is provided."""
     # Show banner only when no subcommand and no help flag
     # (help is handled by BannerGroup)
