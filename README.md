@@ -5,19 +5,19 @@
 </div>
 
 <p align="center">
-    <strong>這是一項旨在幫助組織專注於產品場景而非編寫無差異化程式碼的努力，借助規範驅動開發（Spec-Driven Development）的力量。</strong>
+    <strong>一個開源工具包，讓您能專注於產品情境和可預測的結果，而不是從頭開始盲目編碼每個部分。</strong>
 </p>
 
 <div align="center">
 
 [![Release](https://github.com/Minidoracat/spec-kit-tw/actions/workflows/release.yml/badge.svg)](https://github.com/Minidoracat/spec-kit-tw/actions/workflows/release.yml)
 [![GitHub Repo](https://img.shields.io/badge/GitHub-spec--kit--tw-blue?logo=github)](https://github.com/Minidoracat/spec-kit-tw.git)
-[![Current Version](https://img.shields.io/badge/version-0.0.64-green)](https://github.com/Minidoracat/spec-kit-tw/releases)
+[![Current Version](https://img.shields.io/badge/version-0.0.69-green)](https://github.com/Minidoracat/spec-kit-tw/releases)
 
 </div>
 
 > **💡 這是 [GitHub Spec Kit](https://github.com/github/spec-kit) 的官方中文複刻版本**
-> **🔄 對應原版版本**: [v0.0.64](https://github.com/github/spec-kit/releases/tag/v0.0.64)
+> **🔄 對應原版版本**: [v0.0.69](https://github.com/github/spec-kit/releases/tag/v0.0.69)
 > **📦 包名**: `specify-tw-cli` | **🛠️ 命令**: `specify-tw`
 
 > **⚠️ 保持同步**: 本專案將定期與原版保持同步，確保中文使用者能夠享受最新的功能和改進。
@@ -45,6 +45,7 @@
   - [`specify-tw init` 參數和選項](#specify-tw-init-參數和選項)
   - [範例](#範例)
   - [可用的斜線命令](#可用的斜線命令)
+  - [智慧分支命名功能](#智慧分支命名功能)
   - [環境變數](#環境變數)
 - [📚 核心理念](#-核心理念)
 - [🌟 開發階段](#-開發階段)
@@ -149,6 +150,8 @@ specify-tw --version
 /specify 建置一個可以幫助我將照片整理到不同相簿中的應用程式。相簿按日期分組，可以透過在主頁上拖曳來重新組織。相簿不會巢狀在其他相簿中。在每個相簿內，照片以瓷磚介面預覽。
 ```
 
+> **💡 提示**: 您也可以使用 `--short-name` 參數自訂分支名稱，或讓系統自動從描述生成有意義的名稱。詳見[智慧分支命名功能](#智慧分支命名功能)。
+
 ### 4. 建立技術實施計畫
 
 使用 **`/plan`** 命令提供您的技術堆疊和架構選擇。
@@ -194,7 +197,7 @@ specify-tw --version
 | [Windsurf](https://windsurf.com/)                         | ✅    |                                                                                    |
 | [Kilo Code](https://github.com/Kilo-Org/kilocode)         | ✅    |                                                                                    |
 | [Auggie CLI](https://docs.augmentcode.com/cli/overview)   | ✅    |                                                                                    |
-| [CodeBuddy](https://www.codebuddy.ai)                     | ✅    | **v0.0.64 新增**                                                                    |
+| [CodeBuddy CLI](https://www.codebuddy.ai/cli)             | ✅    | **v0.0.64 新增**                                                                    |
 | [Roo Code](https://roocode.com/)                          | ✅    |                                                                                    |
 | [Amazon Q Developer CLI](https://aws.amazon.com/developer/learning/q-developer-cli/) | ✅ |                                                                                    |
 | [Codex CLI](https://github.com/openai/codex)              | ⚠️    | Codex [不支援](https://github.com/openai/codex/issues/2890) 斜線命令的自訂參數。 |
@@ -283,6 +286,75 @@ specify-tw check
 | `/analyze`      | 跨工件一致性和覆蓋範圍分析（在 /tasks 之後，/implement 之前執行）              |
 | `/implement`    | 執行所有任務以根據計畫建置功能                                                 |
 
+### 智慧分支命名功能
+
+**v0.0.69 新增功能**: Specify TW 現在提供智慧分支命名系統,可以自動從功能描述生成簡潔、有意義的分支名稱。
+
+#### 功能特色
+
+- **自動關鍵字提取**: 從功能描述中提取最重要的 2-4 個關鍵字
+- **停用詞過濾**: 自動移除 42 個常見停用詞(如「我」、「想要」、「一個」等)
+- **縮寫詞保留**: 保留全大寫的技術縮寫(如 API、UI、OAuth2)
+- **GitHub 限制驗證**: 自動確保分支名稱符合 GitHub 244 位元組限制
+- **自動截斷**: 超過限制時智慧截斷並顯示警告
+
+#### 使用方式
+
+**Bash/Zsh 環境**:
+
+```bash
+# 自動生成分支名稱
+.specify/scripts/bash/create-new-feature.sh "我想要新增使用者認證功能"
+# 產生分支: 001-user-authentication-function
+
+# 使用自訂短名稱
+.specify/scripts/bash/create-new-feature.sh --short-name "user-auth" "我想要新增使用者認證功能"
+# 產生分支: 001-user-auth
+
+# 檢視幫助資訊
+.specify/scripts/bash/create-new-feature.sh --help
+```
+
+**PowerShell 環境**:
+
+```powershell
+# 自動生成分支名稱
+.specify\scripts\powershell\create-new-feature.ps1 "為 API 實作 OAuth2 整合"
+# 產生分支: 001-oauth2-api-integration
+
+# 使用自訂短名稱
+.specify\scripts\powershell\create-new-feature.ps1 -ShortName "oauth2-api" "為 API 實作 OAuth2 整合"
+# 產生分支: 001-oauth2-api
+
+# 檢視幫助資訊
+.specify\scripts\powershell\create-new-feature.ps1 -Help
+```
+
+#### 命名範例
+
+| 功能描述                          | 自動生成的分支名稱           |
+| --------------------------------- | ---------------------------- |
+| 我想要新增使用者認證功能          | `001-user-authentication-function` |
+| 為 API 實作 OAuth2 整合           | `002-oauth2-api-integration` |
+| 建立分析儀表板                    | `003-analytics-dashboard`    |
+| 修復付款處理逾時錯誤              | `004-fix-payment-timeout`    |
+
+#### 停用詞清單
+
+系統會自動過濾以下 42 個常見停用詞:
+
+`i`, `a`, `an`, `the`, `to`, `for`, `of`, `in`, `on`, `at`, `by`, `with`, `from`, `is`, `are`, `was`, `were`, `be`, `been`, `being`, `have`, `has`, `had`, `do`, `does`, `did`, `will`, `would`, `should`, `could`, `can`, `may`, `might`, `must`, `shall`, `this`, `that`, `these`, `those`, `my`, `your`, `our`, `their`, `want`, `need`, `add`, `get`, `set`
+
+#### 在 AI 助手中使用
+
+當您使用 `/specify` 命令建立功能規範時,AI 助手會自動使用這個智慧分支命名系統。您也可以在提示中明確指定短名稱:
+
+```text
+/specify --short-name "user-auth" 我想要新增完整的使用者認證系統,包括註冊、登入和密碼重設功能
+```
+
+**詳細說明**: 請參考 [templates/commands/specify.md](templates/commands/specify.md) 中的完整工作流程。
+
 ### 環境變數
 
 | 變數              | 描述                                                                                                                                                                                           |
@@ -335,7 +407,7 @@ specify-tw check
 ## 🔧 前置要求
 
 - **Linux/macOS**（或Windows上的WSL2）
-- AI編碼代理：[Claude Code](https://www.anthropic.com/claude-code)、[GitHub Copilot](https://code.visualstudio.com/) 或 [Gemini CLI](https://github.com/google-gemini/gemini-cli)
+- [支援的](#-支援的ai代理) AI 編碼助手
 - [uv](https://docs.astral.sh/uv/) 用於套件管理
 - [Python 3.11+](https://www.python.org/downloads/)
 - [Git](https://git-scm.com/downloads)

@@ -74,11 +74,11 @@ uvx --from git+https://github.com/Minidoracat/spec-kit-tw spec-kit-tw init
 | 原版追蹤 | `spec-kit/`                   | 不提交   | 不適用              |
 
 ### 版本對應關係
-- **當前版本**：v0.0.64（查看 `pyproject.toml` 中的 `version` 欄位）
-- **原版版本**：v0.0.64（查看 `pyproject.toml` 中的 `description` 欄位）
-- **同步狀態**：已完成核心功能同步（查看 `CHANGELOG.md` 中的同步記錄）
-- **同步日期**：2025-01-16
-- **同步範圍**：v0.0.58 → v0.0.64（7個版本，14個檔案，+477/-283行）
+- **當前版本**：v0.0.69（查看 `pyproject.toml` 中的 `version` 欄位）
+- **原版版本**：v0.0.69（查看 `pyproject.toml` 中的 `description` 欄位）
+- **同步狀態**：已完成智慧分支命名系統同步（查看 `CHANGELOG.md` 中的同步記錄）
+- **同步日期**：2025-01-17
+- **同步範圍**：v0.0.64 → v0.0.69（5個版本，60個檔案，+402/-72行）
 
 ### 緊急情況處理
 1. **同步衝突**：優先保留原版功能，僅在本地化內容上保留修改
@@ -155,7 +155,7 @@ uvx --from git+https://github.com/Minidoracat/spec-kit-tw spec-kit-tw init
 | Codex                   | `codex`        | `.codex/`              | Markdown | CLI    | 基線    |
 | Kilocode                | `kilocode`     | `.kilocode/`           | Markdown | CLI    | 基線    |
 | Auggie                  | `auggie`       | `.auggie/`             | Markdown | CLI    | 基線    |
-| **CodeBuddy**           | `codebuddy`    | `.codebuddy/`          | Markdown | CLI    | v0.0.64 |
+| **CodeBuddy CLI**       | `codebuddy`    | `.codebuddy/`          | Markdown | CLI    | v0.0.64 |
 | Roo Code                | `roo`          | `.roo/`                | Markdown | CLI    | 基線    |
 | Amazon Q Developer CLI  | `q`            | `AGENTS.md`            | Markdown | CLI    | 基線    |
 
@@ -190,12 +190,23 @@ uvx --from git+https://github.com/Minidoracat/spec-kit-tw spec-kit-tw init
 #### Bash 腳本 (`scripts/bash/`)
 - `check-prerequisites.sh` - 檢查前置條件
 - `common.sh` - 通用函式和變數
+  - `find_feature_dir_by_prefix()` - 按數字前綴查找特性目錄（v0.0.69 新增）
+  - 支援多分支共享同一規範
 - `create-new-feature.sh` - 建立新功能分支和規範
+  - **智慧分支命名系統**（v0.0.69 新增）：
+    - `--short-name` 參數支援自訂分支名稱
+    - `generate_branch_name()` 函式：自動停用詞過濾和關鍵詞提取
+    - GitHub 244 字元限制驗證和自動截斷
 - `setup-plan.sh` - 設定計劃環境
 - `update-agent-context.sh` - 更新 AI 助手上下文檔案
 
 #### PowerShell 腳本 (`scripts/powershell/`)
 - 對應的 PowerShell 版本，提供相同功能
+- `create-new-feature.ps1` - **智慧分支命名系統**（v0.0.69 新增）：
+  - `-ShortName` 參數和 `-Help` 開關
+  - `Get-BranchName` 函式：PowerShell 版本的智慧命名邏輯
+  - 完整的停用詞過濾和 244 字元限制驗證
+- `common.ps1` - PowerShell 版本的通用函式庫
 
 ---
 
@@ -427,4 +438,4 @@ uvx --from git+https://github.com/Minidoracat/spec-kit-tw spec-kit-tw init
 3. **結構清晰**：維護良好的文件結構，便於快速查找
 4. **內容完整**：確保所有重要的維護資訊都已包含
 
-**最後更新**：2025-01-16 - 完成 v0.0.64 版本同步與核心重構（AGENT_CONFIG架構）
+**最後更新**：2025-01-17 - 完成 v0.0.69 版本同步（智慧分支命名系統與 CodeBuddy CLI 更新）

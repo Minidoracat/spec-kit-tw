@@ -3,7 +3,7 @@
 ## 前置要求
 
 - **Linux/macOS**（或在Windows上的WSL2）
-- AI編碼助手：[Claude Code](https://www.anthropic.com/claude-code)、[GitHub Copilot](https://code.visualstudio.com/)或[Gemini CLI](https://github.com/google-gemini/gemini-cli)
+- AI 編碼助手：[Claude Code](https://www.anthropic.com/claude-code)、[GitHub Copilot](https://code.visualstudio.com/)、[CodeBuddy CLI](https://www.codebuddy.ai/cli) 或 [Gemini CLI](https://github.com/google-gemini/gemini-cli)
 - [uv](https://docs.astral.sh/uv/) 用於套件管理
 - [Python 3.11+](https://www.python.org/downloads/)
 - [Git](https://git-scm.com/downloads)
@@ -34,6 +34,7 @@ uvx --from git+https://github.com/Minidoracat/spec-kit-tw.git specify-tw init --
 uvx --from git+https://github.com/Minidoracat/spec-kit-tw.git specify-tw init <project_name> --ai claude
 uvx --from git+https://github.com/Minidoracat/spec-kit-tw.git specify-tw init <project_name> --ai gemini
 uvx --from git+https://github.com/Minidoracat/spec-kit-tw.git specify-tw init <project_name> --ai copilot
+uvx --from git+https://github.com/Minidoracat/spec-kit-tw.git specify-tw init <project_name> --ai codebuddy
 ```
 
 ### 忽略助手工具檢查
