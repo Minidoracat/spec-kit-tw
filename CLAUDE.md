@@ -74,11 +74,11 @@ uvx --from git+https://github.com/Minidoracat/spec-kit-tw spec-kit-tw init
 | 原版追蹤 | `spec-kit/`                   | 不提交   | 不適用              |
 
 ### 版本對應關係
-- **當前版本**：v0.0.69（查看 `pyproject.toml` 中的 `version` 欄位）
-- **原版版本**：v0.0.69（查看 `pyproject.toml` 中的 `description` 欄位）
-- **同步狀態**：已完成智慧分支命名系統同步（查看 `CHANGELOG.md` 中的同步記錄）
-- **同步日期**：2025-01-17
-- **同步範圍**：v0.0.64 → v0.0.69（5個版本，60個檔案，+402/-72行）
+- **當前版本**：v0.0.72（查看 `pyproject.toml` 中的 `version` 欄位）
+- **原版版本**：v0.0.72（查看 `pyproject.toml` 中的 `description` 欄位）
+- **同步狀態**：已完成 VS Code 智慧合併和多項修復同步（查看 `CHANGELOG.md` 中的同步記錄）
+- **同步日期**：2025-01-21
+- **同步範圍**：v0.0.69 → v0.0.72（3個版本，9個檔案，+98/-12行）
 
 ### 緊急情況處理
 1. **同步衝突**：優先保留原版功能，僅在本地化內容上保留修改
@@ -113,6 +113,8 @@ uvx --from git+https://github.com/Minidoracat/spec-kit-tw spec-kit-tw init
 - `select_with_arrows()` - 互動式箭頭鍵選擇介面
 - `download_template_from_github()` - GitHub releases 模板下載
 - `download_and_extract_template()` - 模板下載和解壓縮
+- `handle_vscode_settings()` - VS Code 設定檔案智慧合併處理（v0.0.70 新增）
+- `merge_json_files()` - 深度合併 JSON 檔案（v0.0.70 新增）
 - `init()` - 主要專案初始化命令
 - `check()` - 工具可用性檢查
 
@@ -122,6 +124,8 @@ uvx --from git+https://github.com/Minidoracat/spec-kit-tw spec-kit-tw init
 - 跨平台支援（Linux/macOS/Windows）
 - 自動腳本權限設定（POSIX）
 - Git 儲存庫自動初始化
+- VS Code 設定智慧合併（v0.0.70 新增）- 防止覆蓋使用者自訂配置
+- IDE 型 AI 助手智慧檢測（v0.0.70 新增）- 跳過不必要的 CLI 檢查
 
 ### `__init__.py` 同步策略
 

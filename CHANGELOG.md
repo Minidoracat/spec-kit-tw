@@ -5,31 +5,71 @@
 格式基於 [Keep a Changelog](https://keepachangelog.com/zh-TW/1.0.0/)，
 並且本專案遵循[語義化版本](https://semver.org/lang/zh-TW/)。
 
-## [未發布] - 2025-01-17
+## [0.0.72] - 2025-01-21
 
-### 繁體中文版本獨有功能
-- **新增 `--version` / `-v` 選項**：
-  - 顯示 Specify TW CLI 版本資訊
-  - 顯示對應的原版 spec-kit 版本
-  - 使用方式：
-    ```bash
-    specify-tw --version
-    specify-tw -v
-    ```
-  - 輸出範例：
-    ```
-    Specify TW CLI 版本 0.0.69
-    對應原版 spec-kit v0.0.69
-    ```
+### 同步原版
+- 同步原版 v0.0.70 至 v0.0.72（3個版本）
+- 對應原版提交：[3b000fc...3e85f46](https://github.com/github/spec-kit/compare/3b000fc...3e85f46)
+- 變更統計：9 個檔案，+98/-12 行
+
+### 核心功能更新
+
+#### **VS Code Settings 智慧合併功能**（v0.0.70）
+- **新增功能**：`.vscode/settings.json` 現在採用智慧合併而非覆蓋
+- **新增函式**：
+  - `handle_vscode_settings()` - 處理 VS Code 設定檔案的合併或複製
+  - `merge_json_files()` - 深度合併 JSON 檔案
+- **合併邏輯**：
+  - 保留現有設定
+  - 新增 Spec Kit 設定
+  - 遞迴合併巢狀物件
+  - 防止意外丟失自訂 VS Code 工作區配置
+
+#### **IDE 整合型 AI 助手 CLI 檢查邏輯優化**（v0.0.70）
+- **優化內容**：
+  - IDE 整合型助手（GitHub Copilot, Cursor, Windsurf）跳過 CLI 檢查
+  - CLI 型助手（Claude Code, Gemini CLI 等）執行 CLI 檢查
+  - IDE 型助手標記為「IDE 型，無需 CLI 檢查」
+
+#### **修復 create-new-feature.sh 參數解析**（v0.0.71）
+- **修復內容**：
+  - 修正迴圈條件：`while [ $i -lt $# ]` → `while [ $i -le $# ]`
+  - 修正迴圈起始值：`i=0` → `i=1`
+  - 改善 `--short-name` 參數驗證邏輯
+  - 新增檢查下一個參數是否為選項的邏輯
+
+#### **修復 update-agent-context.sh 命令格式**（v0.0.72）
+- **修復內容**：
+  - 修正 JavaScript/TypeScript 命令格式：`echo "npm test \&\& npm run lint"` → `echo "npm test \\&\\& npm run lint"`
+
+#### **媒體檔案優化**（v0.0.72）
+- 優化 5 個媒體檔案，總體減少約 45% 檔案大小
+  - `bootstrap-claude-code.gif`（541KB → 309KB）
+  - `logo_large.webp`（84KB → 46KB）
+  - `logo_small.webp`（11KB → 6KB）
+  - `spec-kit-video-header.jpg`（188KB → 104KB）
+  - `specify_cli.gif`（3.1MB → 1.7MB）
+
+### 繁體中文本地化更新
+- 完成所有新增函式和訊息的繁體中文翻譯
+- 更新 README.md 使用提示為繁體中文
+- 保持 `--version` 功能的繁體中文輸出
 
 ### 技術細節
-- 在 `src/specify_cli/__init__.py` 中新增 `__version__` 常數
-- 新增 `version_callback()` 函式處理版本顯示
-- 更新 `app.callback()` 加入 `--version` 選項參數
-- 使用 Typer 的 `is_eager=True` 確保版本選項優先處理
+- 在 `src/specify_cli/__init__.py` 中新增兩個 JSON 處理函式（約 90 行）
+- 修改 `download_and_extract_template()` 函式整合 VS Code 設定檔案合併邏輯
+- 修改 `check()` 函式優化 IDE 型 AI 助手的 CLI 檢查邏輯
+- 更新版本號至 0.0.72（`pyproject.toml` 和 `__init__.py`）
 
-### 備註
-原版 spec-kit 目前尚未實作 `--version` 功能，此為繁體中文版本為改善使用者體驗而獨立新增的功能。
+### 繁體中文版本獨有功能（保留）
+- **`--version` / `-v` 選項**：
+  - 顯示 Specify TW CLI 版本資訊
+  - 顯示對應的原版 spec-kit 版本
+  - 輸出範例：
+    ```
+    Specify TW CLI 版本 0.0.72
+    對應原版 spec-kit v0.0.72
+    ```
 
 ---
 

@@ -54,7 +54,7 @@ ssl_context = truststore.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
 client = httpx.Client(verify=ssl_context)
 
 # Version information
-__version__ = "0.0.69"
+__version__ = "0.0.72"
 
 def _github_token(cli_token: str | None = None) -> str | None:
     """Return sanitized GitHub token (cli arg takes precedence) or None."""
@@ -487,6 +487,75 @@ def check_tool(tool: str, install_hint: str = None, tracker: StepTracker = None)
         return False
 
 
+def handle_vscode_settings(sub_item: Path, dest_file: Path, rel_path: Path, verbose: bool = False, tracker = None) -> None:
+    """處理 .vscode/settings.json 檔案的合併或複製。"""
+    def log(message: str, color: str = "green") -> None:
+        if verbose and not tracker:
+            console.print(f"[{color}]{message}[/] {rel_path}")
+
+    try:
+        with open(sub_item, 'r', encoding='utf-8') as f:
+            new_settings = json.load(f)
+
+        if dest_file.exists():
+            merged = merge_json_files(dest_file, new_settings, verbose=verbose and not tracker)
+            with open(dest_file, 'w', encoding='utf-8') as f:
+                json.dump(merged, f, indent=4)
+                f.write('\n')
+            log("已合併：", "green")
+        else:
+            shutil.copy2(sub_item, dest_file)
+            log("已複製（不存在現有 settings.json）：", "blue")
+
+    except Exception as e:
+        log(f"警告：無法合併，改為複製：{e}", "yellow")
+        shutil.copy2(sub_item, dest_file)
+
+
+def merge_json_files(existing_path: Path, new_content: dict, verbose: bool = False) -> dict:
+    """將新的 JSON 內容合併到現有的 JSON 檔案中。
+
+    執行深度合併，其中：
+    - 新增鍵會被添加
+    - 現有鍵會被保留（除非被新內容覆蓋）
+    - 巢狀字典會遞迴合併
+    - 列表和其他值會被替換（不合併）
+
+    參數：
+        existing_path: 現有 JSON 檔案的路徑
+        new_content: 要合併的新 JSON 內容
+        verbose: 是否列印合併詳情
+
+    回傳：
+        合併後的 JSON 內容（字典格式）
+    """
+    try:
+        with open(existing_path, 'r', encoding='utf-8') as f:
+            existing_content = json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        # 如果檔案不存在或無效，直接使用新內容
+        return new_content
+
+    def deep_merge(base: dict, update: dict) -> dict:
+        """遞迴地將 update 字典合併到 base 字典中。"""
+        result = base.copy()
+        for key, value in update.items():
+            if key in result and isinstance(result[key], dict) and isinstance(value, dict):
+                # 遞迴合併巢狀字典
+                result[key] = deep_merge(result[key], value)
+            else:
+                # 添加新鍵或替換現有值
+                result[key] = value
+        return result
+
+    merged = deep_merge(existing_content, new_content)
+
+    if verbose:
+        console.print(f"[cyan]已合併 JSON 檔案：[/cyan] {existing_path.name}")
+
+    return merged
+
+
 def is_git_repo(path: Path = None) -> bool:
     """Check if the specified path is inside a git repository."""
     if path is None:
@@ -733,7 +802,11 @@ def download_and_extract_template(project_path: Path, ai_assistant: str, script_
                                         rel_path = sub_item.relative_to(item)
                                         dest_file = dest_path / rel_path
                                         dest_file.parent.mkdir(parents=True, exist_ok=True)
-                                        shutil.copy2(sub_item, dest_file)
+                                        # 特殊處理 .vscode/settings.json - 合併而非覆蓋
+                                        if dest_file.name == "settings.json" and dest_file.parent.name == ".vscode":
+                                            handle_vscode_settings(sub_item, dest_file, rel_path, verbose, tracker)
+                                        else:
+                                            shutil.copy2(sub_item, dest_file)
                             else:
                                 shutil.copytree(item, dest_path)
                         else:
@@ -1181,11 +1254,16 @@ def check():
     agent_results = {}
     for agent_key, agent_config in AGENT_CONFIG.items():
         agent_name = agent_config["name"]
-        # Use the agent key as CLI tool name
-        cli_tool = agent_key
+        requires_cli = agent_config["requires_cli"]
 
-        tracker.add(cli_tool, agent_name)
-        agent_results[agent_key] = check_tool_for_tracker(cli_tool, tracker)
+        tracker.add(agent_key, agent_name)
+
+        if requires_cli:
+            agent_results[agent_key] = check_tool_for_tracker(agent_key, tracker)
+        else:
+            # IDE 型助手 - 跳過 CLI 檢查並標記為選用
+            tracker.skip(agent_key, "IDE 型，無需 CLI 檢查")
+            agent_results[agent_key] = False  # 不將 IDE 型助手計入「已找到」
 
     # Check VS Code variants (not in agent config)
     tracker.add("code", "Visual Studio Code")
