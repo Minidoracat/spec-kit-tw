@@ -54,7 +54,7 @@ ssl_context = truststore.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
 client = httpx.Client(verify=ssl_context)
 
 # Version information
-__version__ = "0.0.72"
+__version__ = "0.0.78"
 
 def _github_token(cli_token: str | None = None) -> str | None:
     """Return sanitized GitHub token (cli arg takes precedence) or None."""
@@ -143,6 +143,12 @@ AGENT_CONFIG = {
         "name": "Amazon Q Developer CLI",
         "folder": ".amazonq/",
         "install_url": "https://aws.amazon.com/developer/learning/q-developer-cli/",
+        "requires_cli": True,
+    },
+    "amp": {
+        "name": "Amp",
+        "folder": ".agents/",
+        "install_url": "https://ampcode.com/manual#install",
         "requires_cli": True,
     },
 }
@@ -922,7 +928,7 @@ def ensure_executable_scripts(project_path: Path, tracker: StepTracker | None = 
 @app.command()
 def init(
     project_name: str = typer.Argument(None, help="新專案目錄名稱（使用 --here 時可選，或使用 '.' 表示目前目錄）"),
-    ai_assistant: str = typer.Option(None, "--ai", help="使用的 AI 助手：claude, gemini, copilot, cursor-agent, qwen, opencode, codex, windsurf, kilocode, auggie, codebuddy, roo, 或 q"),
+    ai_assistant: str = typer.Option(None, "--ai", help="使用的 AI 助手：claude, gemini, copilot, cursor-agent, qwen, opencode, codex, windsurf, kilocode, auggie, codebuddy, roo, amp, 或 q"),
     script_type: str = typer.Option(None, "--script", help="使用的腳本類型：sh 或 ps"),
     ignore_agent_tools: bool = typer.Option(False, "--ignore-agent-tools", help="跳過 AI 代理工具檢查（如 Claude Code）"),
     no_git: bool = typer.Option(False, "--no-git", help="跳過 git 儲存庫初始化"),
@@ -937,7 +943,7 @@ def init(
 
     此命令將會：
     1. 檢查必要工具是否已安裝（git 為可選）
-    2. 讓你選擇 AI 助手（Claude Code、Gemini CLI、GitHub Copilot、Cursor、Qwen Code、opencode、Codex CLI、Windsurf、Kilo Code、Auggie CLI、CodeBuddy、Roo Code 或 Amazon Q Developer CLI）
+    2. 讓你選擇 AI 助手（Claude Code、Gemini CLI、GitHub Copilot、Cursor、Qwen Code、opencode、Codex CLI、Windsurf、Kilo Code、Auggie CLI、CodeBuddy、Roo Code、Amp 或 Amazon Q Developer CLI）
     3. 從 GitHub 下載適當的模板
     4. 將模板解壓到新專案目錄或目前目錄
     5. 初始化新的 git 儲存庫（如果未使用 --no-git 且不存在儲存庫）

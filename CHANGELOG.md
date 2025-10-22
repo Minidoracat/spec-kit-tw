@@ -5,6 +5,36 @@
 格式基於 [Keep a Changelog](https://keepachangelog.com/zh-TW/1.0.0/)，
 並且本專案遵循[語義化版本](https://semver.org/lang/zh-TW/)。
 
+## [0.0.78] - 2025-01-22
+
+### 同步原版
+- 同步原版 [v0.0.73](https://github.com/github/spec-kit/releases/tag/v0.0.73) 至 [v0.0.78](https://github.com/github/spec-kit/releases/tag/v0.0.78)
+- 對應原版提交範圍：`e0dda02...926836e`（6個版本，36個檔案，+588/-194行）
+
+### 新增功能
+- **Amp AI 助手支援**：新增 Amp CLI 助手整合（`amp` 命令，目錄 `.agents/`）
+- **技術棧擴充**：implement.md 新增 Swift、R 和 Kubernetes/k8s 的 .gitignore 模式支援
+- **錯誤處理改善**：update-agent-context 腳本現在可處理沒有 "Active Technologies" 和 "Recent Changes" 區段的檔案，自動在檔案末尾新增缺失區段
+
+### 變更內容
+- 更新 CLI 核心（src/specify_cli/__init__.py）：
+  - 新增 AGENT_CONFIG 中的 amp 配置
+  - 更新 --ai 選項和說明文字以包含 amp
+- 更新腳本系統：
+  - scripts/bash/update-agent-context.sh：新增 AMP_FILE 變數、改善區段存在性檢查邏輯
+  - scripts/powershell/update-agent-context.ps1：同步所有 bash 版本變更
+- 更新命令模板：
+  - templates/commands/implement.md：新增 Swift、R、Kubernetes/k8s 技術棧支援
+
+### 技術改進
+- 改善 update-agent-context 腳本的健壯性，支援不完整的代理檔案結構
+- 自動偵測並補充缺失的 Markdown 區段（Active Technologies、Recent Changes）
+
+### 未包含在此版本
+- DevContainer 配置（.devcontainer/）- 計劃在後續版本中新增
+- Markdown 格式標準化配置（.markdownlint-cli2.jsonc）- 計劃在後續版本中新增
+- 命令模板的格式微調（analyze.md, checklist.md, clarify.md 等）- 功能已同步，格式美化待後續完善
+
 ## [0.0.72] - 2025-01-21
 
 ### 同步原版

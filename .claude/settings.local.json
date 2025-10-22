@@ -2,9 +2,32 @@
   "permissions": {
     "allow": [
       "mcp__sequential-thinking__sequentialthinking",
-      "mcp__context7__get-library-docs"
+      "mcp__context7__get-library-docs",
+      "Bash(test:*)",
+      "Bash(git clone:*)",
+      "Bash(cp:*)",
+      "Bash(uv build:*)",
+      "Bash(uv run:*)",
+      "Bash(iconv:*)",
+      "Bash(python:*)",
+      "Bash(git fetch:*)",
+      "Bash(git checkout:*)",
+      "Bash(git tag:*)",
+      "Bash(git log:*)",
+      "Bash(tail:*)",
+      "Bash(bash scripts/bash/create-new-feature.sh:*)",
+      "Bash(git show:*)"
     ],
     "deny": [],
     "ask": []
-  }
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "brave-search",
+    "context7",
+    "playwright",
+    "sequential-thinking",
+    "magic",
+    "chrome-devtools"
+  ]
 }

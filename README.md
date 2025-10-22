@@ -12,12 +12,12 @@
 
 [![Release](https://github.com/Minidoracat/spec-kit-tw/actions/workflows/release.yml/badge.svg)](https://github.com/Minidoracat/spec-kit-tw/actions/workflows/release.yml)
 [![GitHub Repo](https://img.shields.io/badge/GitHub-spec--kit--tw-blue?logo=github)](https://github.com/Minidoracat/spec-kit-tw.git)
-[![Current Version](https://img.shields.io/badge/version-0.0.69-green)](https://github.com/Minidoracat/spec-kit-tw/releases)
+[![Current Version](https://img.shields.io/badge/version-0.0.78-green)](https://github.com/Minidoracat/spec-kit-tw/releases)
 
 </div>
 
 > **💡 這是 [GitHub Spec Kit](https://github.com/github/spec-kit) 的官方中文複刻版本**
-> **🔄 對應原版版本**: [v0.0.69](https://github.com/github/spec-kit/releases/tag/v0.0.69)
+> **🔄 對應原版版本**: [v0.0.78](https://github.com/github/spec-kit/releases/tag/v0.0.78)
 > **📦 包名**: `specify-tw-cli` | **🛠️ 命令**: `specify-tw`
 
 > **⚠️ 保持同步**: 本專案將定期與原版保持同步，確保中文使用者能夠享受最新的功能和改進。
@@ -136,46 +136,46 @@ specify-tw --version
 
 ### 2. 建立專案原則
 
-在專案目錄中啟動您的 AI 助手。`/speckit.*` 命令可在助手中使用。
+在專案目錄中啟動您的 AI 助手。所有 `/speckit.*` 命令（如 `/speckit.specify`、`/speckit.plan` 等）可在助手中使用。
 
-使用 **`/constitution`** 命令建立專案的指導原則和開發指南，這將指導所有後續開發。
+使用 **`/speckit.constitution`** 命令建立專案的指導原則和開發指南，這將指導所有後續開發。
 
 ```bash
-/constitution 建立專注於程式碼品質、測試標準、使用者體驗一致性和效能要求的原則
+/speckit.constitution 建立專注於程式碼品質、測試標準、使用者體驗一致性和效能要求的原則
 ```
 
 ### 3. 建立規範
 
-使用 **`/specify`** 命令描述您想要建置的內容。專注於**做什麼**和**為什麼**，而不是技術堆疊。
+使用 **`/speckit.specify`** 命令描述您想要建置的內容。專注於**做什麼**和**為什麼**，而不是技術堆疊。
 
 ```bash
-/specify 建置一個可以幫助我將照片整理到不同相簿中的應用程式。相簿按日期分組，可以透過在主頁上拖曳來重新組織。相簿不會巢狀在其他相簿中。在每個相簿內，照片以瓷磚介面預覽。
+/speckit.specify 建置一個可以幫助我將照片整理到不同相簿中的應用程式。相簿按日期分組，可以透過在主頁上拖曳來重新組織。相簿不會巢狀在其他相簿中。在每個相簿內，照片以瓷磚介面預覽。
 ```
 
 > **💡 提示**: 您也可以使用 `--short-name` 參數自訂分支名稱，或讓系統自動從描述生成有意義的名稱。詳見[智慧分支命名功能](#智慧分支命名功能)。
 
 ### 4. 建立技術實施計畫
 
-使用 **`/plan`** 命令提供您的技術堆疊和架構選擇。
+使用 **`/speckit.plan`** 命令提供您的技術堆疊和架構選擇。
 
 ```bash
-/plan 應用程式使用Vite和最少數量的函式庫。盡可能使用純HTML、CSS和JavaScript。圖片不會上傳到任何地方，詮釋資料儲存在本地SQLite資料庫中。
+/speckit.plan 應用程式使用Vite和最少數量的函式庫。盡可能使用純HTML、CSS和JavaScript。圖片不會上傳到任何地方，詮釋資料儲存在本地SQLite資料庫中。
 ```
 
 ### 5. 分解任務
 
-使用 **`/tasks`** 從您的實施計畫建立可操作的任務清單。
+使用 **`/speckit.tasks`** 從您的實施計畫建立可操作的任務清單。
 
 ```bash
-/tasks
+/speckit.tasks
 ```
 
 ### 6. 執行實施
 
-使用 **`/implement`** 執行所有任務並根據計畫建置您的功能。
+使用 **`/speckit.implement`** 執行所有任務並根據計畫建置您的功能。
 
 ```bash
-/implement
+/speckit.implement
 ```
 
 詳細的分步說明，請參閱我們的[綜合指南](./spec-driven.md)。
@@ -280,13 +280,14 @@ specify-tw check
 
 | 命令            | 描述                                                                           |
 | --------------- | ------------------------------------------------------------------------------ |
-| `/constitution` | 建立或更新專案指導原則和開發指南                                               |
-| `/specify`      | 定義您想要建置的內容（需求和使用者故事）                                         |
-| `/clarify`      | 澄清未充分說明的區域（必須在 `/plan` 之前執行，除非明確跳過；以前為 `/quizme`) |
-| `/plan`         | 使用您選擇的技術堆疊建立技術實施計畫                                             |
-| `/tasks`        | 為實施生成可操作的任務清單                                                     |
-| `/analyze`      | 跨工件一致性和覆蓋範圍分析（在 /tasks 之後，/implement 之前執行）              |
-| `/implement`    | 執行所有任務以根據計畫建置功能                                                 |
+| `/speckit.constitution` | 建立或更新專案管理原則和開發指南                                                 |
+| `/speckit.specify`      | 定義您想要建置的內容（需求和使用者故事）                                         |
+| `/speckit.clarify`      | 澄清未充分說明的區域（建議在 `/speckit.plan` 之前執行；以前為 `/quizme`）      |
+| `/speckit.plan`         | 使用您選擇的技術堆疊建立技術實施計畫                                             |
+| `/speckit.tasks`        | 為實施生成可操作的任務清單                                                     |
+| `/speckit.analyze`      | 跨工件一致性和覆蓋範圍分析（在 `/speckit.tasks` 之後，`/speckit.implement` 之前執行）|
+| `/speckit.implement`    | 執行所有任務以根據計畫建置功能                                                 |
+| `/speckit.checklist`    | 生成自訂品質檢查清單，驗證需求的完整性、清晰度和一致性（如「英語的單元測試」）   |
 
 ### 智慧分支命名功能
 
@@ -349,19 +350,19 @@ specify-tw check
 
 #### 在 AI 助手中使用
 
-當您使用 `/specify` 命令建立功能規範時,AI 助手會自動使用這個智慧分支命名系統。您也可以在提示中明確指定短名稱:
+當您使用 `/speckit.specify` 命令建立功能規範時,AI 助手會自動使用這個智慧分支命名系統。您也可以在提示中明確指定短名稱:
 
 ```text
-/specify --short-name "user-auth" 我想要新增完整的使用者認證系統,包括註冊、登入和密碼重設功能
+/speckit.specify --short-name "user-auth" 我想要新增完整的使用者認證系統,包括註冊、登入和密碼重設功能
 ```
 
-**詳細說明**: 請參考 [templates/commands/specify.md](templates/commands/specify.md) 中的完整工作流程。
+**詳細說明**: 請參考 [templates/commands/speckit.specify.md](templates/commands/speckit.specify.md) 中的完整工作流程。
 
 ### 環境變數
 
 | 變數              | 描述                                                                                                                                                                                           |
 | ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `SPECIFY_FEATURE` | 為非 Git 儲存庫覆蓋功能偵測。設定為功能目錄名稱（例如，`001-photo-albums`）以在不使用 Git 分支的情況下處理特定功能。<br/>**必須在您正在使用的代理內容中設定，然後才能使用 `/plan` 或後續命令。 |
+| `SPECIFY_FEATURE` | 為非 Git 儲存庫覆蓋功能偵測。設定為功能目錄名稱（例如，`001-photo-albums`）以在不使用 Git 分支的情況下處理特定功能。<br/>**必須在您正在使用的代理內容中設定，然後才能使用 `/speckit.plan` 或後續命令。 |
 
 ## 📚 核心理念
 
@@ -481,12 +482,12 @@ specify-tw init <project_name> --ai claude --ignore-agent-tools
 
 ![引導Claude Code環境](./media/bootstrap-claude-code.gif)
 
-如果您看到 `/constitution`、`/specify`、`/plan`、`/tasks` 和 `/implement` 命令可用，就說明配置正確。
+如果您看到 `/speckit.constitution`、`/speckit.specify`、`/speckit.plan`、`/speckit.tasks` 和 `/speckit.implement` 命令可用，就說明配置正確。
 
-第一步應該是使用 `/constitution` 命令建立專案的指導原則。這有助於確保在所有後續開發階段中做出一致的決策：
+第一步應該是使用 `/speckit.constitution` 命令建立專案的指導原則。這有助於確保在所有後續開發階段中做出一致的決策：
 
 ```text
-/constitution 建立專注於程式碼品質、測試標準、使用者體驗一致性和效能要求的原則。包括這些原則應如何指導技術決策和實施選擇的治理。
+/speckit.constitution 建立專注於程式碼品質、測試標準、使用者體驗一致性和效能要求的原則。包括這些原則應如何指導技術決策和實施選擇的治理。
 ```
 
 此步驟會建立或更新 `.specify/memory/constitution.md` 檔案，其中包含專案的基礎指南，AI代理將在規範、規劃和實施階段參考這些指南。
@@ -546,7 +547,7 @@ specify-tw init <project_name> --ai claude --ignore-agent-tools
 
 ### **步驟2：** 建立專案規範
 
-有了專案原則後，您現在可以建立功能規範。使用 `/specify` 命令，然後為您想要開發的專案提供具體需求。
+有了專案原則後，您現在可以建立功能規範。使用 `/speckit.specify` 命令，然後為您想要開發的專案提供具體需求。
 
 ```text
 對於您建立的每個範例專案或專案，每個專案應該有5到15個之間的可變數量任務，
@@ -568,12 +569,12 @@ specify-tw init <project_name> --ai claude --ignore-agent-tools
 您應該在建立技術計畫之前執行結構化澄清工作流程，以減少下游的返工。
 
 首選順序：
-1. 使用 `/clarify`（結構化）- 順序的、基於覆蓋率的提問，將答案記錄在澄清部分。
+1. 使用 `/speckit.clarify`（結構化）- 順序的、基於覆蓋率的提問，將答案記錄在澄清部分。
 2. 如果仍然感覺模糊，可以選擇性地進行臨時自由形式精煉。
 
 如果您想跳過澄清（例如，技術驗證或探索性原型），請明確說明，這樣代理就不會因缺少澄清而阻塞。
 
-範例自由形式精煉提示（如果需要，在 `/clarify` 之後）：
+範例自由形式精煉提示（如果需要，在 `/speckit.clarify` 之後）：
 
 ```text
 我們將使用.NET Aspire生成這個，使用Postgres作為資料庫。前端應該使用
@@ -638,7 +639,7 @@ Blazor伺服器與拖放任務板、即時更新。應該建立一個REST API，
 
 ### **步驟4：** 生成計畫
 
-您現在可以具體說明技術堆疊和其他技術要求。您可以使用專案模板中內建的 `/plan` 命令，使用這樣的提示：
+您現在可以具體說明技術堆疊和其他技術要求。您可以使用專案模板中內建的 `/speckit.plan` 命令，使用這樣的提示：
 
 ```text
 現在我希望您去審核實施計畫和實施細節檔案。
@@ -663,13 +664,13 @@ Blazor伺服器與拖放任務板、即時更新。應該建立一個REST API，
 
 ### **步驟6：** 實施
 
-準備就緒後，使用 `/implement` 命令執行您的實施計畫：
+準備就緒後，使用 `/speckit.implement` 命令執行您的實施計畫：
 
 ```text
-/implement
+/speckit.implement
 ```
 
-`/implement` 命令將：
+`/speckit.implement` 命令將：
 - 驗證所有先決條件都已就緒（章程、規範、計畫和任務）
 - 解析 `tasks.md` 中的任務分解
 - 按正確順序執行任務，尊重相依性和並行執行標記
