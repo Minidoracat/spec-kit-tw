@@ -114,6 +114,21 @@ specify-tw check
 uvx --from git+https://github.com/Minidoracat/spec-kit-tw.git specify-tw init <PROJECT_NAME>
 ```
 
+#### 更新已安裝的工具
+
+如果您已經使用方式1安裝，要更新到最新版本：
+
+```bash
+# 推薦方式：使用 upgrade 命令
+uv tool upgrade specify-tw-cli
+
+# 或者使用 --force 重新安裝
+uv tool install --force specify-tw-cli --from git+https://github.com/Minidoracat/spec-kit-tw.git
+
+# 驗證版本
+specify-tw --version
+```
+
 **持久化安裝的優勢**：
 
 - 工具保持安裝狀態並在 PATH 中可用

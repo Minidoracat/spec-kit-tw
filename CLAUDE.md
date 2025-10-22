@@ -74,11 +74,11 @@ uvx --from git+https://github.com/Minidoracat/spec-kit-tw spec-kit-tw init
 | 原版追蹤 | `spec-kit/`                   | 不提交   | 不適用              |
 
 ### 版本對應關係
-- **當前版本**：v0.0.72（查看 `pyproject.toml` 中的 `version` 欄位）
-- **原版版本**：v0.0.72（查看 `pyproject.toml` 中的 `description` 欄位）
-- **同步狀態**：已完成 VS Code 智慧合併和多項修復同步（查看 `CHANGELOG.md` 中的同步記錄）
-- **同步日期**：2025-01-21
-- **同步範圍**：v0.0.69 → v0.0.72（3個版本，9個檔案，+98/-12行）
+- **當前版本**：v0.0.78（查看 `pyproject.toml` 中的 `version` 欄位）
+- **原版版本**：v0.0.78（查看 `pyproject.toml` 中的 `description` 欄位）
+- **同步狀態**：已完成 Amp AI 助手支援和技術棧擴充同步（查看 `CHANGELOG.md` 中的同步記錄）
+- **同步日期**：2025-01-22
+- **同步範圍**：v0.0.73 → v0.0.78（6個版本，36個檔案，+588/-194行）
 
 ### 緊急情況處理
 1. **同步衝突**：優先保留原版功能，僅在本地化內容上保留修改
