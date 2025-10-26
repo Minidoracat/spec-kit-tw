@@ -87,10 +87,21 @@ uvx --from git+https://github.com/Minidoracat/spec-kit-tw spec-kit-tw init
 3. **功能異常**：對比原版專案，確認是否為同步問題
 
 ### 版本管理要求
-- **重要**：任何對 `src/specify_cli/__init__.py` 的修改都需要：
-  - 更新 `pyproject.toml` 中的版本號
-  - 在 `CHANGELOG.md` 中新增相應條目
-  - 同步原版更新時記錄對應的原版提交資訊
+
+**版本號單一來源原則**（自 v0.0.79 起）：
+- **唯一來源**：版本號只需在 `pyproject.toml` 中維護
+- **自動同步**：`src/specify_cli/__init__.py` 會從 `pyproject.toml` 動態讀取版本號
+- **技術實現**：
+  - 優先從 `pyproject.toml` 讀取（開發模式）
+  - 次要從套件元資料讀取（安裝後）
+  - 最後使用硬編碼 fallback（極端情況）
+
+**版本更新流程**：
+- ✅ 更新 `pyproject.toml` 中的版本號和描述
+- ✅ 在 `CHANGELOG.md` 中新增相應條目
+- ✅ 更新 `CLAUDE.md` 版本資訊
+- ✅ 同步原版更新時記錄對應的原版提交資訊
+- ❌ **無需**手動更新 `__init__.py` 中的 `__version__`（會自動讀取）
 
 ### AGENTS.md 比對檢查清單
 每次同步原版版本時，必須檢查：

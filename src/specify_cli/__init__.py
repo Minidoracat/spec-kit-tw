@@ -53,8 +53,25 @@ import truststore
 ssl_context = truststore.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
 client = httpx.Client(verify=ssl_context)
 
-# Version information
-__version__ = "0.0.78"
+# Version information - dynamically read from pyproject.toml
+import tomllib
+from pathlib import Path as _Path
+
+def _get_version() -> str:
+    """從 pyproject.toml 讀取版本號"""
+    pyproject_path = _Path(__file__).parent.parent.parent / "pyproject.toml"
+    try:
+        with open(pyproject_path, "rb") as f:
+            return tomllib.load(f)["project"]["version"]
+    except Exception:
+        # Fallback to package metadata
+        try:
+            from importlib.metadata import version
+            return version("specify-tw-cli")
+        except Exception:
+            return "0.0.79"  # Last resort fallback
+
+__version__ = _get_version()
 
 def _github_token(cli_token: str | None = None) -> str | None:
     """Return sanitized GitHub token (cli arg takes precedence) or None."""
