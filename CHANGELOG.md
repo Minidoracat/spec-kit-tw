@@ -5,6 +5,96 @@
 格式基於 [Keep a Changelog](https://keepachangelog.com/zh-TW/1.0.0/)，
 並且本專案遵循[語義化版本](https://semver.org/lang/zh-TW/)。
 
+## [0.0.79] - 2025-10-27
+
+### 同步原版
+- 同步原版 [v0.0.79](https://github.com/github/spec-kit/releases/tag/v0.0.79)（對應原版 CLI v0.0.20）
+- 對應原版提交：`598148c`, `b40b41c`, `1f3d9b5`
+- 主要功能：智慧分支編號系統，防止分支編號重複
+
+### 核心功能更新
+
+#### **智慧分支編號檢測系統**
+- **新增 `--number` 參數**：`create-new-feature` 腳本支援手動指定分支編號
+- **增強分支編號檢測機制**：自動檢查三個來源以防止編號衝突
+  - 遠端分支（Remote branches）：`git ls-remote --heads origin`
+  - 本地分支（Local branches）：`git branch`
+  - 規格目錄（Specs directories）：`specs/[number]-[name]` 格式
+- **自動抓取遠端資訊**：執行 `git fetch --all --prune` 確保分支資訊最新
+- **智慧編號分配**：
+  - 掃描所有來源找出同名分支的最高編號 N
+  - 自動使用 N+1 作為新分支編號
+  - 防止多人協作時的編號衝突
+
+#### **命令模板改進**
+- **specify.md 更新**：新增詳細的分支編號檢測步驟說明
+  - 增加步驟 2：在建立分支前檢查現有分支
+  - 詳細說明如何檢查遠端、本地、規格目錄三個來源
+  - 提供 Bash 和 PowerShell 的完整命令範例
+- **文件改善**：恢復關於 JSON 輸出的重要說明
+
+### 變更檔案
+- `scripts/bash/create-new-feature.sh` (+88/-14 行)
+  - 新增 `BRANCH_NUMBER` 變數和 `--number` 參數處理
+  - 新增 `check_existing_branches()` 函式：檢查所有三個來源
+  - 改進說明文字：新增 `--number` 參數和使用範例
+- `scripts/powershell/create-new-feature.ps1` (+106/-12 行)
+  - 新增 `-Number` 參數（整數類型，預設 0）
+  - 新增 `Get-NextBranchNumber` 函式：PowerShell 版本的分支檢測
+  - 同步所有 Bash 腳本的邏輯改進
+- `templates/commands/specify.md` (+36/-9 行)
+  - 繁體中文化新增的分支檢測步驟說明
+  - 保留原版的邏輯結構和技術細節
+
+### 技術細節
+- **檔案統計**：3 個檔案，+230/-35 行
+- **核心邏輯**：完全與原版 v0.0.79 對等
+- **本地化**：使用者介面保持繁體中文
+
+### 相容性說明
+- **版本編號對應**：
+  - Git tag：v0.0.79
+  - CLI 版本（pyproject.toml）：v0.0.20
+  - 原版在 v0.0.79 時，CLI 版本為 v0.0.20
+- **向後相容**：舊的腳本呼叫方式仍然有效（不指定 `--number` 時自動檢測）
+- **新功能**：可選的 `--number` 參數允許手動控制分支編號
+
+### 使用範例
+```bash
+# 自動檢測並分配編號（推薦）
+scripts/bash/create-new-feature.sh --json --short-name "user-auth" "新增使用者認證"
+
+# 手動指定編號
+scripts/bash/create-new-feature.sh --json --number 5 --short-name "user-auth" "新增使用者認證"
+```
+
+```powershell
+# 自動檢測並分配編號（推薦）
+scripts/powershell/create-new-feature.ps1 -Json -ShortName "user-auth" "新增使用者認證"
+
+# 手動指定編號
+scripts/powershell/create-new-feature.ps1 -Json -Number 5 -ShortName "user-auth" "新增使用者認證"
+```
+
+### 版本號管理策略變更
+
+- **重要變更**：從此版本開始，版本號以 `pyproject.toml` 為唯一來源
+- **原因說明**：
+  - 不一定每次都跟隨原版更新，避免版本號大跨度跳躍
+  - GitHub Actions 改為從 `pyproject.toml` 讀取版本號
+  - Git tags 將與 `pyproject.toml` 保持同步
+- **歷史版本**：v0.0.1 至 v0.0.8 為早期自動遞增版本號（保留作為歷史記錄）
+- **新策略**：手動更新 `pyproject.toml` 版本號後，推送時自動建立對應的 Git tag 和 GitHub Release
+
+### 未來版本更新流程
+
+每次同步原版時：
+1. 更新 `pyproject.toml` 版本號和描述
+2. 更新 `CHANGELOG.md` 記錄變更
+3. 更新 `CLAUDE.md` 版本資訊
+4. 提交變更並建立對應的 Git tag
+5. 推送後 GitHub Actions 會自動建立 Release 和模板套件
+
 ## [0.0.78] - 2025-01-22
 
 ### 同步原版

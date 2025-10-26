@@ -31,15 +31,36 @@ $ARGUMENTS
      - "建立分析儀表板" → "analytics-dashboard"
      - "修復付款處理逾時錯誤" → "fix-payment-timeout"
 
-2. 從專案根目錄執行腳本 `{SCRIPT}`，**附加 short-name 參數**，並解析其 JSON 輸出以取得 BRANCH_NAME 和 SPEC_FILE。所有檔案路徑必須是絕對路徑。
+2. **在建立新分支前檢查現有分支**：
+
+   a. 首先，抓取所有遠端分支以確保我們擁有最新資訊：
+      ```bash
+      git fetch --all --prune
+      ```
+
+   b. 為短名稱找出所有來源中的最高功能編號：
+      - 遠端分支：`git ls-remote --heads origin | grep -E 'refs/heads/[0-9]+-<short-name>$'`
+      - 本地分支：`git branch | grep -E '^[* ]*[0-9]+-<short-name>$'`
+      - 規格目錄：檢查符合 `specs/[0-9]+-<short-name>` 的目錄
+
+   c. 確定下一個可用編號：
+      - 從所有三個來源提取所有編號
+      - 找出最高編號 N
+      - 將 N+1 用於新分支編號
+
+   d. 使用計算出的編號和短名稱執行腳本 `{SCRIPT}`：
+      - 傳遞 `--number N+1` 和 `--short-name "your-short-name"` 以及功能描述
+      - Bash 範例：`{SCRIPT} --json --number 5 --short-name "user-auth" "新增使用者認證"`
+      - PowerShell 範例：`{SCRIPT} -Json -Number 5 -ShortName "user-auth" "新增使用者認證"`
 
    **重要**：
-   - 將 short-name 參數附加到 `{SCRIPT}` 命令，使用您在步驟 1 建立的 2-4 詞短名稱
-   - Bash: `--short-name "your-generated-short-name"`
-   - PowerShell: `-ShortName "your-generated-short-name"`
+   - 檢查所有三個來源（遠端分支、本地分支、規格目錄）以找出最高編號
+   - 僅匹配具有確切短名稱模式的分支/目錄
+   - 如果未找到具有此短名稱的現有分支/目錄，則從編號 1 開始
+   - 每個功能只能執行此腳本一次
+   - JSON 在終端機中作為輸出提供 - 請務必參考它以取得您要尋找的實際內容
+   - JSON 輸出將包含 BRANCH_NAME 和 SPEC_FILE 路徑
    - 對於參數中包含單引號的情況（如 "I'm Groot"），請使用轉義語法：例如 'I'\''m Groot'（或者如果可能，使用雙引號："I'm Groot"）
-   - 此腳本只能執行一次
-   - JSON 輸出會在終端機中提供 - 請務必參考它以取得您要尋找的實際內容
 
 3. 載入 `templates/spec-template.md` 以了解必需的段落。
 
