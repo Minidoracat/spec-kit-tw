@@ -126,7 +126,7 @@ uv tool upgrade specify-tw-cli
 uv tool install --force specify-tw-cli --from git+https://github.com/Minidoracat/spec-kit-tw.git
 
 # 驗證版本
-specify-tw --version
+specify-tw version
 ```
 
 **持久化安裝的優勢**：
@@ -146,7 +146,7 @@ uv tool upgrade specify-tw-cli
 uv tool install --force specify-tw-cli --from git+https://github.com/Minidoracat/spec-kit-tw.git
 
 # 驗證版本
-specify-tw --version
+specify-tw version
 ```
 
 ### 2. 建立專案原則
