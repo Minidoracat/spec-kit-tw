@@ -5,6 +5,126 @@
 格式基於 [Keep a Changelog](https://keepachangelog.com/zh-TW/1.0.0/)，
 並且本專案遵循[語義化版本](https://semver.org/lang/zh-TW/)。
 
+## [0.0.85] - 2025-11-18
+
+### 同步原版
+- 同步原版 [v0.0.80](https://github.com/github/spec-kit/releases/tag/v0.0.80) 至 [v0.0.85](https://github.com/github/spec-kit/releases/tag/v0.0.85)
+- 跨越 6 個版本：v0.0.80（VS Code/Copilot Agents）→ v0.0.81（修復）→ v0.0.82（修復）→ v0.0.83（SHAI agent）→ v0.0.84（文檔）→ v0.0.85（CDPATH 修復）
+
+### 核心功能更新
+
+#### **新增 OVHcloud SHAI AI Agent 支援**（v0.0.83）
+- **新代理配置**：在 `AGENT_CONFIG` 中新增 SHAI agent
+  - CLI 工具：`shai`
+  - 配置目錄：`.shai/`
+  - 安裝位置：https://github.com/ovh/shai
+- **完整整合**：
+  - `src/specify_cli/__init__.py`：新增 SHAI 到代理配置字典
+  - `scripts/bash/update-agent-context.sh`：新增 SHAI 支援
+  - `scripts/powershell/update-agent-context.ps1`：新增 SHAI 支援
+  - `AGENTS.md`：更新文檔包含新代理
+
+#### **GitHub API 速率限制錯誤處理改進**（v0.0.80）
+- **新增函式**：
+  - `_parse_rate_limit_headers()`：解析 GitHub 速率限制標頭
+  - `_format_rate_limit_error()`：格式化友善的錯誤訊息
+- **改善使用者體驗**：
+  - 顯示速率限制、剩餘請求數、重置時間
+  - 提供疑難排解提示（使用 GitHub token 提高限制）
+  - 清楚說明已驗證（5,000/小時）vs 未驗證（60/小時）的差異
+
+#### **Git 初始化錯誤處理增強**（v0.0.80）
+- **改進 `init_git_repo()` 函式**：
+  - 返回 `Tuple[bool, Optional[str]]` 而非 `bool`
+  - 提供詳細的錯誤訊息（命令、退出碼、錯誤輸出）
+  - 在 UI 中顯示 Git 初始化失敗的詳細面板
+  - 提供手動初始化 git 的指導
+
+#### **新增 version 命令**（v0.0.80）
+- **新命令**：`specify-tw version`
+- **顯示資訊**：
+  - CLI 版本（從 pyproject.toml 或套件元資料讀取）
+  - 模板版本（從 GitHub API 取得最新版本）
+  - 發布日期
+  - Python 版本、平台、架構、作業系統版本
+- **美化輸出**：使用 Rich Panel 格式化顯示
+
+#### **VS Code/Copilot Agents 手遞機制**（v0.0.80）
+- **新增 handoffs 系統**：模板命令支援 VS Code 代理手遞
+- **影響的模板**：
+  - `clarify.md`：新增「建立技術計畫」handoff
+  - `constitution.md`：新增「建立規範」handoff
+  - `plan.md`：新增「建立任務」和「建立檢查清單」handoffs
+  - `specify.md`：新增「建立技術計畫」和「澄清規範需求」handoffs
+  - `tasks.md`：新增「分析一致性」和「實施專案」handoffs
+- **命令前綴更新**：使用 `/speckit.` 前綴（如 `/speckit.constitution`）
+
+#### **新增 TasksToIssues 命令**（v0.0.80）
+- **新功能**：將任務自動轉換為 GitHub Issues
+- **新增檔案**：`templates/commands/taskstoissues.md`
+- **特點**：
+  - 使用 GitHub MCP server 建立 issues
+  - 安全檢查：只在匹配的 GitHub 遠端建立 issues
+  - 支援批量任務到 issues 轉換
+
+#### **CDPATH 環境變數修復**（v0.0.85）
+- **問題**：腳本在某些環境中因 CDPATH 設定而失敗
+- **修復**：在腳本開頭使用 `CDPATH="" cd` 確保一致的 `cd` 行為
+- **影響的腳本**：
+  - `scripts/bash/create-new-feature.sh`
+  - `scripts/bash/update-agent-context.sh`
+
+#### **智慧分支編號系統增強**（v0.0.80）
+- **新增輔助函式**：
+  - `get_highest_from_specs()`：從 specs 目錄取得最高編號
+  - `get_highest_from_branches()`：從所有分支取得最高編號
+  - `clean_branch_name()`：清理和格式化分支名稱
+- **改進 `check_existing_branches()`**：接受 `specs_dir` 參數以提高靈活性
+
+#### **UI 樣式改進**
+- **StepTracker**：使用 `[bright_black]` 替代 `[dim]` 以獲得更好的可見性
+- **Next Steps 面板**：
+  - 新增編號子項目（2.1, 2.2, 2.3...）
+  - 新增 `/speckit.checklist` 到增強命令
+  - 改善格式和可讀性
+
+#### **ESLint 配置處理更新**（v0.0.84）
+- **改進邏輯**：
+  - `.eslintrc*` → 建立 `.eslintignore`
+  - `eslint.config.*` → 確保配置的 `ignores` 條目涵蓋所需模式
+- **更好的現代 ESLint 支援**：適應 flat config 格式
+
+### 變更檔案統計
+- **總計**：30+ 個檔案，+1,300 行程式碼
+- **核心檔案**：
+  - `src/specify_cli/__init__.py`：+170 行（速率限制、version 命令、SHAI agent、Git 錯誤處理）
+  - `scripts/bash/create-new-feature.sh`：+58 行（CDPATH 修復、輔助函式）
+  - `scripts/bash/update-agent-context.sh`：+15 行（SHAI 支援、CDPATH 修復）
+  - `scripts/powershell/create-new-feature.ps1`：對應的 PowerShell 更新
+  - `scripts/powershell/update-agent-context.ps1`：對應的 PowerShell 更新
+  - `templates/commands/taskstoissues.md`：新增檔案（繁體中文翻譯）
+  - 多個命令模板：新增 handoffs 支援
+
+### 繁體中文本地化
+- **taskstoissues.md**：完整繁體中文翻譯
+- **handoffs 標籤**：所有 handoff 標籤使用繁體中文
+- **錯誤訊息**：速率限制和 Git 錯誤使用繁體中文描述
+- **版本命令**：輸出標籤使用繁體中文
+
+### 技術細節
+- **datetime 導入**：新增 `from datetime import datetime, timezone` 用於速率限制處理
+- **httpx.Headers 類型**：用於速率限制標頭解析
+- **版本號讀取**：動態從 pyproject.toml 讀取版本號
+
+### 向後相容性
+- ✅ 所有現有功能保持不變
+- ✅ 舊的腳本呼叫方式仍然有效
+- ✅ 現有的代理配置繼續工作
+- ✅ handoffs 為可選功能，不影響核心工作流程
+
+### 已知問題
+- 無
+
 ## [0.0.79] - 2025-10-27
 
 ### 同步原版

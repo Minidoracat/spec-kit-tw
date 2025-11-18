@@ -1,5 +1,13 @@
 ---
 description: 使用計劃範本執行實作規劃工作流程以生成設計工件。
+handoffs:
+  - label: 建立任務
+    agent: speckit.tasks
+    prompt: 將計畫拆分為任務
+    send: true
+  - label: 建立檢查清單
+    agent: speckit.checklist
+    prompt: 為以下領域建立檢查清單...
 scripts:
   sh: scripts/bash/setup-plan.sh --json
   ps: scripts/powershell/setup-plan.ps1 -Json

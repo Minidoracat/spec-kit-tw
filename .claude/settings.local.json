@@ -16,7 +16,9 @@
       "Bash(git log:*)",
       "Bash(tail:*)",
       "Bash(bash scripts/bash/create-new-feature.sh:*)",
-      "Bash(git show:*)"
+      "Bash(git show:*)",
+      "Bash(git describe:*)",
+      "Bash(git rev-parse:*)"
     ],
     "deny": [],
     "ask": []

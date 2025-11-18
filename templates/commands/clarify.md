@@ -1,5 +1,9 @@
 ---
 description: 透過詢問最多5個高度針對性的澄清問題來識別當前功能規範中的未指定領域，並將答案編碼回規範。
+handoffs:
+  - label: 建立技術計畫
+    agent: speckit.plan
+    prompt: 為規範建立計畫。我正在使用...
 scripts:
   sh: scripts/bash/check-prerequisites.sh --json --paths-only
   ps: scripts/powershell/check-prerequisites.ps1 -Json -PathsOnly

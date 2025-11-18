@@ -12,12 +12,12 @@
 
 [![Release](https://github.com/Minidoracat/spec-kit-tw/actions/workflows/release.yml/badge.svg)](https://github.com/Minidoracat/spec-kit-tw/actions/workflows/release.yml)
 [![GitHub Repo](https://img.shields.io/badge/GitHub-spec--kit--tw-blue?logo=github)](https://github.com/Minidoracat/spec-kit-tw.git)
-[![Current Version](https://img.shields.io/badge/version-0.0.78-green)](https://github.com/Minidoracat/spec-kit-tw/releases)
+[![Current Version](https://img.shields.io/badge/version-0.0.85-green)](https://github.com/Minidoracat/spec-kit-tw/releases)
 
 </div>
 
 > **💡 這是 [GitHub Spec Kit](https://github.com/github/spec-kit) 的官方中文複刻版本**
-> **🔄 對應原版版本**: [v0.0.78](https://github.com/github/spec-kit/releases/tag/v0.0.78)
+> **🔄 對應原版版本**: [v0.0.85](https://github.com/github/spec-kit/releases/tag/v0.0.85)
 > **📦 包名**: `specify-tw-cli` | **🛠️ 命令**: `specify-tw`
 
 > **⚠️ 保持同步**: 本專案將定期與原版保持同步，確保中文使用者能夠享受最新的功能和改進。
@@ -216,6 +216,8 @@ specify-tw --version
 | [Auggie CLI](https://docs.augmentcode.com/cli/overview)   | ✅    |                                                                                    |
 | [CodeBuddy CLI](https://www.codebuddy.ai/cli)             | ✅    | **v0.0.64 新增**                                                                    |
 | [Roo Code](https://roocode.com/)                          | ✅    |                                                                                    |
+| [Amp](https://ampcode.com)                                | ✅    | **v0.0.85 新增**                                                                    |
+| [SHAI](https://github.com/ovh/shai)                       | ✅    | **v0.0.85 新增**                                                                    |
 | [Amazon Q Developer CLI](https://aws.amazon.com/developer/learning/q-developer-cli/) | ✅ |                                                                                    |
 | [Codex CLI](https://github.com/openai/codex)              | ⚠️    | Codex [不支援](https://github.com/openai/codex/issues/2890) 斜線命令的自訂參數。 |
 
@@ -228,16 +230,17 @@ specify-tw --version
 | 命令    | 描述                                                                                                                          |
 | ------- | ----------------------------------------------------------------------------------------------------------------------------- |
 | `init`  | 從最新模板初始化新的 Specify TW 專案                                                                                          |
-| `check` | 檢查已安裝的工具 (`git`, `claude`, `gemini`, `copilot`, `cursor-agent`, `qwen`, `opencode`, `codex`, `windsurf`, `kilocode`, `auggie`, `codebuddy`, `roo`, `q`, `code`/`code-insiders`) |
+| `check` | 檢查已安裝的工具 (`git`, `claude`, `gemini`, `copilot`, `cursor-agent`, `qwen`, `opencode`, `codex`, `windsurf`, `kilocode`, `auggie`, `codebuddy`, `roo`, `amp`, `shai`, `q`, `code`/`code-insiders`) |
+| `version` | 顯示 CLI 版本、模板版本和系統資訊 |
 
 ### `specify-tw init` 參數和選項
 
 | 參數/選項              | 類型 | 描述                                                                                                                             |
 | ---------------------- | ---- | -------------------------------------------------------------------------------------------------------------------------------- |
 | `<project-name>`       | 參數 | 新專案目錄的名稱（使用 `--here` 時可選，或使用 `.` 表示目前目錄）                                                                                         |
-| `--ai`                 | 選項 | 要使用的AI助手：`claude`, `gemini`, `copilot`, `cursor-agent`, `qwen`, `opencode`, `codex`, `windsurf`, `kilocode`, `auggie`, `codebuddy`, `roo`, 或 `q` |
+| `--ai`                 | 選項 | 要使用的AI助手：`claude`, `gemini`, `copilot`, `cursor-agent`, `qwen`, `opencode`, `codex`, `windsurf`, `kilocode`, `auggie`, `codebuddy`, `roo`, `amp`, `shai`, 或 `q` |
 | `--script`             | 選項 | 要使用的指令碼變體：`sh` (bash/zsh) 或 `ps` (PowerShell)                                                                           |
-| `--ignore-agent-tools` | 標誌 | 跳過AI代理工具的檢查，如 Claude Code                                                                                             |
+| `--ignore-agent-tools` | 標誌 | 跳過AI代理工具的檢查（如 Claude Code, Gemini CLI, SHAI 等）；適用於跳過不需要的檢查或工具尚未安裝的情況                        |
 | `--no-git`             | 標誌 | 跳過 git 儲存庫初始化                                                                                                              |
 | `--here`               | 標誌 | 在目前目錄初始化專案，而不是建立新目錄                                                                                           |
 | `--force`              | 標誌 | 在目前目錄中初始化時強制合併/覆寫（跳過確認）                                                                                    |
@@ -263,6 +266,12 @@ specify-tw init my-project --ai windsurf
 # 使用 CodeBuddy 支援初始化（v0.0.64 新增）
 specify-tw init my-project --ai codebuddy
 
+# 使用 Amp 支援初始化（v0.0.85 新增）
+specify-tw init my-project --ai amp
+
+# 使用 SHAI 支援初始化（v0.0.85 新增）
+specify-tw init my-project --ai shai
+
 # 使用 PowerShell 指令碼初始化（Windows/跨平台）
 specify-tw init my-project --ai copilot --script ps
 
@@ -287,6 +296,9 @@ specify-tw init my-project --ai claude --github-token ghp_your_token_here
 
 # 檢查系統要求
 specify-tw check
+
+# 顯示版本和系統資訊（v0.0.85 新增）
+specify-tw version
 ```
 
 ### 可用的斜線命令
@@ -303,6 +315,7 @@ specify-tw check
 | `/speckit.analyze`      | 跨工件一致性和覆蓋範圍分析（在 `/speckit.tasks` 之後，`/speckit.implement` 之前執行）|
 | `/speckit.implement`    | 執行所有任務以根據計畫建置功能                                                 |
 | `/speckit.checklist`    | 生成自訂品質檢查清單，驗證需求的完整性、清晰度和一致性（如「英語的單元測試」）   |
+| `/speckit.taskstoissues` | 將任務清單中的任務轉換為 GitHub Issues（需要 `gh` CLI 和有效的 GitHub token）（v0.0.85 新增） |
 
 ### 智慧分支命名功能
 
@@ -378,6 +391,21 @@ specify-tw check
 | 變數              | 描述                                                                                                                                                                                           |
 | ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `SPECIFY_FEATURE` | 為非 Git 儲存庫覆蓋功能偵測。設定為功能目錄名稱（例如，`001-photo-albums`）以在不使用 Git 分支的情況下處理特定功能。<br/>**必須在您正在使用的代理內容中設定，然後才能使用 `/speckit.plan` 或後續命令。 |
+| `GH_TOKEN` 或 `GITHUB_TOKEN` | GitHub API 權杖，用於提高 API 速率限制。已驗證請求限制為 5,000 次/小時，未驗證為 60 次/小時。                                                                                                |
+
+### GitHub API 速率限制處理
+
+**v0.0.85 新增功能**: Specify TW 現在提供增強的 GitHub API 速率限制錯誤處理。當遇到速率限制（HTTP 403/429）時，CLI 會提供詳細的錯誤資訊包括：
+
+- **速率限制狀態**：目前的請求限制和剩餘次數
+- **重置時間**：限制重置的本地時區時間
+- **重試間隔**：等待重試的建議時間（如果可用）
+- **疑難排解提示**：具體的解決方案建議
+
+**建議做法**：
+- 在企業或共享 CI 環境中使用 `--github-token` 選項或設定環境變數
+- 已驗證請求的速率限制為 5,000 次/小時，遠高於未驗證的 60 次/小時
+- 使用 `--debug` 選項可查看完整的 API 回應內容，便於診斷問題
 
 ## 📚 核心理念
 

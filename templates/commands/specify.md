@@ -1,5 +1,13 @@
 ---
 description: 從自然語言功能描述建立或更新功能規格。
+handoffs:
+  - label: 建立技術計畫
+    agent: speckit.plan
+    prompt: 為規範建立計畫。我正在使用...
+  - label: 澄清規範需求
+    agent: speckit.clarify
+    prompt: 澄清規範需求
+    send: true
 scripts:
   sh: scripts/bash/create-new-feature.sh --json "{ARGS}"
   ps: scripts/powershell/create-new-feature.ps1 -Json "{ARGS}"

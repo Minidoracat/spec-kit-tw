@@ -1,7 +1,7 @@
 [project]
 name = "specify-tw-cli"
-version = "0.0.79"
-description = "Specify TW CLI, part of GitHub Spec Kit TW. A tool to bootstrap your projects for Spec-Driven Development (SDD). Corresponds to upstream spec-kit v0.0.79."
+version = "0.0.85"
+description = "Specify TW CLI, part of GitHub Spec Kit TW. A tool to bootstrap your projects for Spec-Driven Development (SDD). Corresponds to upstream spec-kit v0.0.85."
 readme = "README.md"
 license = {text = "MIT"}
 authors = [

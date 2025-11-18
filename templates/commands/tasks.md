@@ -1,5 +1,14 @@
 ---
 description: 根據可用的設計工件為功能生成可操作的、依賴關係排序的 tasks.md。
+handoffs:
+  - label: 分析一致性
+    agent: speckit.analyze
+    prompt: 執行專案一致性分析
+    send: true
+  - label: 實施專案
+    agent: speckit.implement
+    prompt: 分階段開始實施
+    send: true
 scripts:
   sh: scripts/bash/check-prerequisites.sh --json
   ps: scripts/powershell/check-prerequisites.ps1 -Json

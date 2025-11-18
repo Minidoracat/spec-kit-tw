@@ -64,7 +64,8 @@ $ARGUMENTS
      git rev-parse --git-dir 2>/dev/null
      ```
    - 檢查 Dockerfile* 是否存在或 plan.md 中提到 Docker → 建立/驗證 .dockerignore
-   - 檢查 .eslintrc* 或 eslint.config.* 是否存在 → 建立/驗證 .eslintignore
+   - 檢查 .eslintrc* 是否存在 → 建立/驗證 .eslintignore
+   - 檢查 eslint.config.* 是否存在 → 確保配置的 `ignores` 條目涵蓋所需的模式
    - 檢查 .prettierrc* 是否存在 → 建立/驗證 .prettierignore
    - 檢查 .npmrc 或 package.json 是否存在 → 建立/驗證 .npmignore（如果發布套件）
    - 檢查 terraform 檔案 (*.tf) 是否存在 → 建立/驗證 .terraformignore

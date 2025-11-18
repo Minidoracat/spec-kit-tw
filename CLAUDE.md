@@ -74,12 +74,12 @@ uvx --from git+https://github.com/Minidoracat/spec-kit-tw spec-kit-tw init
 | 原版追蹤 | `spec-kit/`                   | 不提交   | 不適用              |
 
 ### 版本對應關係
-- **當前版本**：v0.0.79（查看 `pyproject.toml` 中的 `version` 欄位）
-- **原版版本**：v0.0.79（Git tag，對應原版 CLI v0.0.20）
-- **同步狀態**：已完成智慧分支編號系統同步（查看 `CHANGELOG.md` 中的同步記錄）
-- **同步日期**：2025-10-27
-- **同步範圍**：v0.0.78 → v0.0.79（3個檔案，+230/-35行）
-- **核心功能**：防止分支編號重複的智慧檢測機制
+- **當前版本**：v0.0.85（查看 `pyproject.toml` 中的 `version` 欄位）
+- **原版版本**：v0.0.85（Git tag）
+- **同步狀態**：已完成 VS Code/Copilot Agents 和 SHAI agent 支援同步（查看 `CHANGELOG.md` 中的同步記錄）
+- **同步日期**：2025-11-18
+- **同步範圍**：v0.0.79 → v0.0.85（跨越 6 個版本，30+ 檔案，+1,300 行）
+- **核心功能**：SHAI agent 支援、GitHub API 速率限制處理、VS Code handoffs、新增 version 命令
 
 ### 緊急情況處理
 1. **同步衝突**：優先保留原版功能，僅在本地化內容上保留修改
@@ -174,6 +174,7 @@ uvx --from git+https://github.com/Minidoracat/spec-kit-tw spec-kit-tw init
 | **CodeBuddy CLI**       | `codebuddy`    | `.codebuddy/`          | Markdown | CLI    | v0.0.64 |
 | Roo Code                | `roo`          | `.roo/`                | Markdown | CLI    | 基線    |
 | Amazon Q Developer CLI  | `q`            | `AGENTS.md`            | Markdown | CLI    | 基線    |
+| **SHAI**                | `shai`         | `.shai/commands/`      | Markdown | CLI    | v0.0.85 |
 
 ### 模板系統
 
@@ -200,6 +201,7 @@ uvx --from git+https://github.com/Minidoracat/spec-kit-tw spec-kit-tw init
 - `specify.md` - 建立功能規格的命令
 - `tasks.md` - 生成可執行任務的命令
 - `checklist.md` - 生成檢查清單的命令（v0.0.57 新增）
+- `taskstoissues.md` - 將任務轉換為 GitHub Issues（v0.0.85 新增）
 
 ### 腳本系統
 
@@ -213,8 +215,13 @@ uvx --from git+https://github.com/Minidoracat/spec-kit-tw spec-kit-tw init
     - `--short-name` 參數支援自訂分支名稱
     - `generate_branch_name()` 函式：自動停用詞過濾和關鍵詞提取
     - GitHub 244 字元限制驗證和自動截斷
+  - **v0.0.85 增強**：
+    - `get_highest_from_specs()` - 從 specs 目錄取得最高編號
+    - `get_highest_from_branches()` - 從所有分支取得最高編號
+    - `clean_branch_name()` - 清理和格式化分支名稱
+    - CDPATH 修復確保跨環境一致性
 - `setup-plan.sh` - 設定計劃環境
-- `update-agent-context.sh` - 更新 AI 助手上下文檔案
+- `update-agent-context.sh` - 更新 AI 助手上下文檔案（v0.0.85：新增 SHAI 支援）
 
 #### PowerShell 腳本 (`scripts/powershell/`)
 - 對應的 PowerShell 版本，提供相同功能
@@ -222,6 +229,11 @@ uvx --from git+https://github.com/Minidoracat/spec-kit-tw spec-kit-tw init
   - `-ShortName` 參數和 `-Help` 開關
   - `Get-BranchName` 函式：PowerShell 版本的智慧命名邏輯
   - 完整的停用詞過濾和 244 字元限制驗證
+  - **v0.0.85 增強**：
+    - `Get-HighestFromSpecs()` - 從 specs 目錄取得最高編號
+    - `Get-HighestFromBranches()` - 從所有分支取得最高編號
+    - `Clean-BranchName()` - 清理和格式化分支名稱
+- `update-agent-context.ps1` - 更新 AI 助手上下文檔案（v0.0.85：新增 SHAI 支援）
 - `common.ps1` - PowerShell 版本的通用函式庫
 
 ---
@@ -454,4 +466,4 @@ uvx --from git+https://github.com/Minidoracat/spec-kit-tw spec-kit-tw init
 3. **結構清晰**：維護良好的文件結構，便於快速查找
 4. **內容完整**：確保所有重要的維護資訊都已包含
 
-**最後更新**：2025-01-17 - 完成 v0.0.69 版本同步（智慧分支命名系統與 CodeBuddy CLI 更新）
+**最後更新**：2025-11-18 - 完成 v0.0.85 版本同步（VS Code/Copilot Agents 交接、SHAI 代理、速率限制錯誤處理、版本命令）

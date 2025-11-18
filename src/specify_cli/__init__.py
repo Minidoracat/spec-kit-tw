@@ -49,6 +49,7 @@ from typer.core import TyperGroup
 import readchar
 import ssl
 import truststore
+from datetime import datetime, timezone
 
 ssl_context = truststore.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
 client = httpx.Client(verify=ssl_context)
@@ -81,6 +82,63 @@ def _github_auth_headers(cli_token: str | None = None) -> dict:
     """Return Authorization header dict only when a non-empty token exists."""
     token = _github_token(cli_token)
     return {"Authorization": f"Bearer {token}"} if token else {}
+
+def _parse_rate_limit_headers(headers: httpx.Headers) -> dict:
+    """Extract and parse GitHub rate-limit headers."""
+    info = {}
+
+    # Standard GitHub rate-limit headers
+    if "X-RateLimit-Limit" in headers:
+        info["limit"] = headers.get("X-RateLimit-Limit")
+    if "X-RateLimit-Remaining" in headers:
+        info["remaining"] = headers.get("X-RateLimit-Remaining")
+    if "X-RateLimit-Reset" in headers:
+        reset_epoch = int(headers.get("X-RateLimit-Reset", "0"))
+        if reset_epoch:
+            reset_time = datetime.fromtimestamp(reset_epoch, tz=timezone.utc)
+            info["reset_epoch"] = reset_epoch
+            info["reset_time"] = reset_time
+            info["reset_local"] = reset_time.astimezone()
+
+    # Retry-After header (seconds or HTTP-date)
+    if "Retry-After" in headers:
+        retry_after = headers.get("Retry-After")
+        try:
+            info["retry_after_seconds"] = int(retry_after)
+        except ValueError:
+            # HTTP-date format - not implemented, just store as string
+            info["retry_after"] = retry_after
+
+    return info
+
+def _format_rate_limit_error(status_code: int, headers: httpx.Headers, url: str) -> str:
+    """Format a user-friendly error message with rate-limit information."""
+    rate_info = _parse_rate_limit_headers(headers)
+
+    lines = [f"GitHub API 返回狀態 {status_code} for {url}"]
+    lines.append("")
+
+    if rate_info:
+        lines.append("[bold]速率限制資訊：[/bold]")
+        if "limit" in rate_info:
+            lines.append(f"  • 速率限制: {rate_info['limit']} 請求/小時")
+        if "remaining" in rate_info:
+            lines.append(f"  • 剩餘: {rate_info['remaining']}")
+        if "reset_local" in rate_info:
+            reset_str = rate_info["reset_local"].strftime("%Y-%m-%d %H:%M:%S %Z")
+            lines.append(f"  • 重置時間: {reset_str}")
+        if "retry_after_seconds" in rate_info:
+            lines.append(f"  • 重試間隔: {rate_info['retry_after_seconds']} 秒")
+        lines.append("")
+
+    # Add troubleshooting guidance
+    lines.append("[bold]疑難排解提示：[/bold]")
+    lines.append("  • 如果您在共享 CI 或企業環境中，可能會受到速率限制。")
+    lines.append("  • 考慮透過 --github-token 或 GH_TOKEN/GITHUB_TOKEN")
+    lines.append("    環境變數使用 GitHub token 以提高速率限制。")
+    lines.append("  • 已驗證請求限制為 5,000/小時，未驗證為 60/小時。")
+
+    return "\n".join(lines)
 
 # Constants
 AGENT_CONFIG = {
@@ -166,6 +224,12 @@ AGENT_CONFIG = {
         "name": "Amp",
         "folder": ".agents/",
         "install_url": "https://ampcode.com/manual#install",
+        "requires_cli": True,
+    },
+    "shai": {
+        "name": "SHAI",
+        "folder": ".shai/",
+        "install_url": "https://github.com/ovh/shai",
         "requires_cli": True,
     },
 }
@@ -264,13 +328,13 @@ class StepTracker:
             if status == "pending":
                 # Entire line light gray (pending)
                 if detail_text:
-                    line = f"{symbol} [dim]{label} ({detail_text})[/dim]"
+                    line = f"{symbol} [bright_black]{label} ({detail_text})[/bright_black]"
                 else:
-                    line = f"{symbol} [dim]{label}[/dim]"
+                    line = f"{symbol} [bright_black]{label}[/bright_black]"
             else:
                 # Label white, detail (if any) light gray in parentheses
                 if detail_text:
-                    line = f"{symbol} [white]{label}[/white] [dim]({detail_text})[/dim]"
+                    line = f"{symbol} [white]{label}[/white] [bright_black]({detail_text})[/bright_black]"
                 else:
                     line = f"{symbol} [white]{label}[/white]"
 
@@ -426,19 +490,8 @@ def show_banner():
     console.print()
 
 
-def version_callback(value: bool):
-    """Print version and exit."""
-    if value:
-        console.print(f"[cyan]Specify TW CLI[/cyan] 版本 [green]{__version__}[/green]")
-        console.print(f"[dim]對應原版 spec-kit v{__version__}[/dim]")
-        raise typer.Exit()
-
-
 @app.callback()
-def callback(
-    ctx: typer.Context,
-    version: bool = typer.Option(None, "--version", "-v", help="顯示版本資訊", callback=version_callback, is_eager=True)
-):
+def callback(ctx: typer.Context):
     """Show banner when no subcommand is provided."""
     # Show banner only when no subcommand and no help flag
     # (help is handled by BannerGroup)
@@ -600,26 +653,38 @@ def is_git_repo(path: Path = None) -> bool:
         return False
 
 
-def init_git_repo(project_path: Path, quiet: bool = False) -> bool:
+def init_git_repo(project_path: Path, quiet: bool = False) -> Tuple[bool, Optional[str]]:
     """Initialize a git repository in the specified path.
-    quiet: if True suppress console output (tracker handles status)
+
+    Args:
+        project_path: Path to initialize git repository in
+        quiet: if True suppress console output (tracker handles status)
+
+    Returns:
+        Tuple of (success: bool, error_message: Optional[str])
     """
     try:
         original_cwd = Path.cwd()
         os.chdir(project_path)
         if not quiet:
             console.print("[cyan]正在初始化 git 儲存庫...[/cyan]")
-        subprocess.run(["git", "init"], check=True, capture_output=True)
-        subprocess.run(["git", "add", "."], check=True, capture_output=True)
-        subprocess.run(["git", "commit", "-m", "Initial commit from Specify template"], check=True, capture_output=True)
+        subprocess.run(["git", "init"], check=True, capture_output=True, text=True)
+        subprocess.run(["git", "add", "."], check=True, capture_output=True, text=True)
+        subprocess.run(["git", "commit", "-m", "Initial commit from Specify template"], check=True, capture_output=True, text=True)
         if not quiet:
             console.print("[green]✓[/green] Git 儲存庫已初始化")
-        return True
+        return True, None
 
     except subprocess.CalledProcessError as e:
+        error_msg = f"命令: {' '.join(e.cmd)}\n退出碼: {e.returncode}"
+        if e.stderr:
+            error_msg += f"\n錯誤: {e.stderr.strip()}"
+        elif e.stdout:
+            error_msg += f"\n輸出: {e.stdout.strip()}"
+
         if not quiet:
             console.print(f"[red]初始化 git 儲存庫錯誤：[/red] {e}")
-        return False
+        return False, error_msg
     finally:
         os.chdir(original_cwd)
 
@@ -643,10 +708,11 @@ def download_template_from_github(ai_assistant: str, download_dir: Path, *, scri
         )
         status = response.status_code
         if status != 200:
-            msg = f"GitHub API returned {status} for {api_url}"
+            # Format detailed error message with rate-limit info
+            error_msg = _format_rate_limit_error(status, response.headers, api_url)
             if debug:
-                msg += f"\nResponse headers: {response.headers}\nBody (truncated 500): {response.text[:500]}"
-            raise RuntimeError(msg)
+                error_msg += f"\n\n[dim]回應內容 (截斷 500):[/dim]\n{response.text[:500]}"
+            raise RuntimeError(error_msg)
         try:
             release_data = response.json()
         except ValueError as je:
@@ -694,8 +760,11 @@ def download_template_from_github(ai_assistant: str, download_dir: Path, *, scri
             headers=_github_auth_headers(github_token),
         ) as response:
             if response.status_code != 200:
-                body_sample = response.text[:400]
-                raise RuntimeError(f"Download failed with {response.status_code}\nHeaders: {response.headers}\nBody (truncated): {body_sample}")
+                # Handle rate-limiting on download as well
+                error_msg = _format_rate_limit_error(response.status_code, response.headers, download_url)
+                if debug:
+                    error_msg += f"\n\n[dim]回應內容 (截斷 400):[/dim]\n{response.text[:400]}"
+                raise RuntimeError(error_msg)
             total_size = int(response.headers.get('content-length', 0))
             with open(zip_path, 'wb') as f:
                 if total_size == 0:
@@ -945,7 +1014,7 @@ def ensure_executable_scripts(project_path: Path, tracker: StepTracker | None = 
 @app.command()
 def init(
     project_name: str = typer.Argument(None, help="新專案目錄名稱（使用 --here 時可選，或使用 '.' 表示目前目錄）"),
-    ai_assistant: str = typer.Option(None, "--ai", help="使用的 AI 助手：claude, gemini, copilot, cursor-agent, qwen, opencode, codex, windsurf, kilocode, auggie, codebuddy, roo, amp, 或 q"),
+    ai_assistant: str = typer.Option(None, "--ai", help="使用的 AI 助手：claude, gemini, copilot, cursor-agent, qwen, opencode, codex, windsurf, kilocode, auggie, codebuddy, roo, amp, shai, 或 q"),
     script_type: str = typer.Option(None, "--script", help="使用的腳本類型：sh 或 ps"),
     ignore_agent_tools: bool = typer.Option(False, "--ignore-agent-tools", help="跳過 AI 代理工具檢查（如 Claude Code）"),
     no_git: bool = typer.Option(False, "--no-git", help="跳過 git 儲存庫初始化"),
@@ -1115,7 +1184,7 @@ def init(
 
     console.print(f"[cyan]選擇的 AI 助手：[/cyan] {selected_ai}")
     console.print(f"[cyan]選擇的腳本類型：[/cyan] {selected_script}")
-    
+
     # Download and set up project
     # New tree-based progress (no emojis); include earlier substeps
     tracker = StepTracker("初始化 Specify 專案")
@@ -1141,6 +1210,9 @@ def init(
     ]:
         tracker.add(key, label)
 
+    # Track git error message outside Live context so it persists
+    git_error_message = None
+
     # Use transient so live tree is replaced by the final static render (avoids duplicate output)
     with Live(tracker.render(), console=console, refresh_per_second=8, transient=True) as live:
         tracker.attach_refresh(lambda: live.update(tracker.render()))
@@ -1161,10 +1233,12 @@ def init(
                 if is_git_repo(project_path):
                     tracker.complete("git", "偵測到現有儲存庫")
                 elif should_init_git:
-                    if init_git_repo(project_path, quiet=True):
+                    success, error_msg = init_git_repo(project_path, quiet=True)
+                    if success:
                         tracker.complete("git", "已初始化")
                     else:
                         tracker.error("git", "初始化失敗")
+                        git_error_message = error_msg
                 else:
                     tracker.skip("git", "git 不可用")
             else:
@@ -1193,10 +1267,28 @@ def init(
     # Final static tree (ensures finished state visible after Live context ends)
     console.print(tracker.render())
     console.print("\n[bold green]專案就緒。[/bold green]")
-    
+
+    # Show git error details if initialization failed
+    if git_error_message:
+        console.print()
+        git_error_panel = Panel(
+            f"[yellow]警告：[/yellow] Git 儲存庫初始化失敗\n\n"
+            f"{git_error_message}\n\n"
+            f"[dim]您可以稍後手動初始化 git：[/dim]\n"
+            f"[cyan]cd {project_path if not here else '.'}[/cyan]\n"
+            f"[cyan]git init[/cyan]\n"
+            f"[cyan]git add .[/cyan]\n"
+            f"[cyan]git commit -m \"Initial commit\"[/cyan]",
+            title="[red]Git 初始化失敗[/red]",
+            border_style="red",
+            padding=(1, 2)
+        )
+        console.print(git_error_panel)
+
     # Agent folder security notice
-    if selected_ai in AGENT_FOLDER_MAP:
-        agent_folder = AGENT_FOLDER_MAP[selected_ai]
+    agent_config = AGENT_CONFIG.get(selected_ai)
+    if agent_config:
+        agent_folder = agent_config["folder"]
         security_notice = Panel(
             f"某些代理程式可能會在專案內的代理程式資料夾中儲存憑證、身份驗證令牌或其他識別和私有工件。\n"
             f"考慮將 [cyan]{agent_folder}[/cyan]（或其部分）加入到 [cyan].gitignore[/cyan] 以防止意外洩露憑證。",
@@ -1206,7 +1298,7 @@ def init(
         )
         console.print()
         console.print(security_notice)
-    
+
     # Boxed "Next steps" section
     steps_lines = []
     if not here:
@@ -1230,11 +1322,11 @@ def init(
 
     steps_lines.append(f"{step_num}. 開始使用斜線命令與你的 AI 助手：")
 
-    steps_lines.append("   - [cyan]/constitution[/] - 建立專案原則")
-    steps_lines.append("   - [cyan]/specify[/] - 建立基線規範")
-    steps_lines.append("   - [cyan]/plan[/] - 建立實施計畫")
-    steps_lines.append("   - [cyan]/tasks[/] - 產生可執行任務")
-    steps_lines.append("   - [cyan]/implement[/] - 執行實施")
+    steps_lines.append("   2.1 [cyan]/speckit.constitution[/] - 建立專案原則")
+    steps_lines.append("   2.2 [cyan]/speckit.specify[/] - 建立基線規範")
+    steps_lines.append("   2.3 [cyan]/speckit.plan[/] - 建立實施計畫")
+    steps_lines.append("   2.4 [cyan]/speckit.tasks[/] - 產生可執行任務")
+    steps_lines.append("   2.5 [cyan]/speckit.implement[/] - 執行實施")
 
     steps_panel = Panel("\n".join(steps_lines), title="後續步驟", border_style="cyan", padding=(1,2))
     console.print()
@@ -1243,8 +1335,9 @@ def init(
     enhancement_lines = [
         "可用於規範的選用命令 [bright_black]（提高品質和信心）[/bright_black]",
         "",
-        f"○ [cyan]/clarify[/] [bright_black]（選用）[/bright_black] - 在規劃前提出結構化問題以降低模糊區域的風險（如果使用則在 [cyan]/plan[/] 前執行）",
-        f"○ [cyan]/analyze[/] [bright_black]（選用）[/bright_black] - 跨工件一致性和對齊報告（在 [cyan]/tasks[/] 後，[cyan]/implement[/] 前）"
+        f"○ [cyan]/speckit.clarify[/] [bright_black]（選用）[/bright_black] - 在規劃前提出結構化問題以降低模糊區域的風險（如果使用則在 [cyan]/speckit.plan[/] 前執行）",
+        f"○ [cyan]/speckit.analyze[/] [bright_black]（選用）[/bright_black] - 跨工件一致性和對齊報告（在 [cyan]/speckit.tasks[/] 後，[cyan]/speckit.implement[/] 前）",
+        f"○ [cyan]/speckit.checklist[/] [bright_black]（選用）[/bright_black] - 產生品質檢查清單以驗證需求完整性、清晰度和一致性（在 [cyan]/speckit.plan[/] 後）"
     ]
     enhancements_panel = Panel("\n".join(enhancement_lines), title="增強命令", border_style="cyan", padding=(1,2))
     console.print()
@@ -1305,6 +1398,84 @@ def check():
     if not any(agent_results.values()):
         console.print("[dim]提示：安裝 AI 助手以獲得最佳體驗[/dim]")
 
+@app.command()
+def version():
+    """顯示版本和系統資訊。"""
+    import platform
+    import importlib.metadata
+
+    show_banner()
+
+    # Get CLI version from package metadata
+    cli_version = "unknown"
+    try:
+        cli_version = importlib.metadata.version("specify-tw-cli")
+    except Exception:
+        # Fallback: try reading from pyproject.toml if running from source
+        try:
+            import tomllib
+            pyproject_path = Path(__file__).parent.parent.parent / "pyproject.toml"
+            if pyproject_path.exists():
+                with open(pyproject_path, "rb") as f:
+                    data = tomllib.load(f)
+                    cli_version = data.get("project", {}).get("version", "unknown")
+        except Exception:
+            pass
+
+    # Fetch latest template release version
+    repo_owner = "Minidoracat"
+    repo_name = "spec-kit-tw"
+    api_url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/releases/latest"
+
+    template_version = "unknown"
+    release_date = "unknown"
+
+    try:
+        response = client.get(
+            api_url,
+            timeout=10,
+            follow_redirects=True,
+            headers=_github_auth_headers(),
+        )
+        if response.status_code == 200:
+            release_data = response.json()
+            template_version = release_data.get("tag_name", "unknown")
+            # Remove 'v' prefix if present
+            if template_version.startswith("v"):
+                template_version = template_version[1:]
+            release_date = release_data.get("published_at", "unknown")
+            if release_date != "unknown":
+                # Format the date nicely
+                try:
+                    dt = datetime.fromisoformat(release_date.replace('Z', '+00:00'))
+                    release_date = dt.strftime("%Y-%m-%d")
+                except Exception:
+                    pass
+    except Exception:
+        pass
+
+    info_table = Table(show_header=False, box=None, padding=(0, 2))
+    info_table.add_column("Key", style="cyan", justify="right")
+    info_table.add_column("Value", style="white")
+
+    info_table.add_row("CLI 版本", cli_version)
+    info_table.add_row("模板版本", template_version)
+    info_table.add_row("發布日期", release_date)
+    info_table.add_row("", "")
+    info_table.add_row("Python", platform.python_version())
+    info_table.add_row("平台", platform.system())
+    info_table.add_row("架構", platform.machine())
+    info_table.add_row("作業系統版本", platform.version())
+
+    panel = Panel(
+        info_table,
+        title="[bold cyan]Specify TW CLI 資訊[/bold cyan]",
+        border_style="cyan",
+        padding=(1, 2)
+    )
+
+    console.print(panel)
+    console.print()
 
 def main():
     app()
