@@ -74,12 +74,12 @@ uvx --from git+https://github.com/Minidoracat/spec-kit-tw spec-kit-tw init
 | 原版追蹤 | `spec-kit/`                   | 不提交   | 不適用              |
 
 ### 版本對應關係
-- **當前版本**：v0.0.85（查看 `pyproject.toml` 中的 `version` 欄位）
-- **原版版本**：v0.0.85（Git tag）
-- **同步狀態**：已完成 VS Code/Copilot Agents 和 SHAI agent 支援同步（查看 `CHANGELOG.md` 中的同步記錄）
-- **同步日期**：2025-11-18
-- **同步範圍**：v0.0.79 → v0.0.85（跨越 6 個版本，30+ 檔案，+1,300 行）
-- **核心功能**：SHAI agent 支援、GitHub API 速率限制處理、VS Code handoffs、新增 version 命令
+- **當前版本**：v0.0.90（查看 `pyproject.toml` 中的 `version` 欄位）
+- **原版版本**：v0.0.90（Git tag）
+- **同步狀態**：已完成 Qoder CLI 和 IBM Bob 支援同步、分支編號八進制修復（查看 `CHANGELOG.md` 中的同步記錄）
+- **同步日期**：2025-12-05
+- **同步範圍**：v0.0.85 → v0.0.90（跨越 5 個版本）
+- **核心功能**：新增 Qoder CLI 和 IBM Bob 助手、分支編號八進制解析修復、分支編號全域檢測邏輯
 
 ### 緊急情況處理
 1. **同步衝突**：優先保留原版功能，僅在本地化內容上保留修改
@@ -158,7 +158,7 @@ uvx --from git+https://github.com/Minidoracat/spec-kit-tw spec-kit-tw init
 - 📝 **說明文件**：使用說明、操作指導、除錯資訊
 - 📝 **輸出訊息**：CLI 輸出、進度顯示、工具檢查結果
 
-### AI 助手支援（v0.0.64更新）
+### AI 助手支援（v0.0.90更新）
 | 助手                    | CLI 工具       | 目錄格式               | 命令格式 | 類型   | 版本    |
 | ----------------------- | -------------- | ---------------------- | -------- | ------ | ------- |
 | Claude Code             | `claude`       | `.claude/commands/`    | Markdown | CLI    | 基線    |
@@ -171,10 +171,12 @@ uvx --from git+https://github.com/Minidoracat/spec-kit-tw spec-kit-tw init
 | Codex                   | `codex`        | `.codex/`              | Markdown | CLI    | 基線    |
 | Kilocode                | `kilocode`     | `.kilocode/`           | Markdown | CLI    | 基線    |
 | Auggie                  | `auggie`       | `.auggie/`             | Markdown | CLI    | 基線    |
-| **CodeBuddy CLI**       | `codebuddy`    | `.codebuddy/`          | Markdown | CLI    | v0.0.64 |
+| CodeBuddy CLI           | `codebuddy`    | `.codebuddy/`          | Markdown | CLI    | v0.0.64 |
 | Roo Code                | `roo`          | `.roo/`                | Markdown | CLI    | 基線    |
 | Amazon Q Developer CLI  | `q`            | `AGENTS.md`            | Markdown | CLI    | 基線    |
-| **SHAI**                | `shai`         | `.shai/commands/`      | Markdown | CLI    | v0.0.85 |
+| SHAI                    | `shai`         | `.shai/commands/`      | Markdown | CLI    | v0.0.85 |
+| **Qoder CLI**           | `qoder`        | `.qoder/commands/`     | Markdown | CLI    | v0.0.90 |
+| **IBM Bob**             | 無（IDE 整合） | `.bob/commands/`       | Markdown | IDE    | v0.0.90 |
 
 ### 模板系統
 
@@ -466,4 +468,4 @@ uvx --from git+https://github.com/Minidoracat/spec-kit-tw spec-kit-tw init
 3. **結構清晰**：維護良好的文件結構，便於快速查找
 4. **內容完整**：確保所有重要的維護資訊都已包含
 
-**最後更新**：2025-11-18 - 完成 v0.0.85 版本同步（VS Code/Copilot Agents 交接、SHAI 代理、速率限制錯誤處理、版本命令）
+**最後更新**：2025-12-05 - 完成 v0.0.90 版本同步（新增 Qoder CLI 和 IBM Bob 助手、分支編號八進制修復、分支編號全域檢測邏輯）

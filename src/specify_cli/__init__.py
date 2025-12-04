@@ -203,9 +203,15 @@ AGENT_CONFIG = {
         "requires_cli": True,
     },
     "codebuddy": {
-        "name": "CodeBuddy CLI",
+        "name": "CodeBuddy",
         "folder": ".codebuddy/",
         "install_url": "https://www.codebuddy.ai/cli",
+        "requires_cli": True,
+    },
+    "qoder": {
+        "name": "Qoder CLI",
+        "folder": ".qoder/",
+        "install_url": "https://qoder.com/cli",
         "requires_cli": True,
     },
     "roo": {
@@ -231,6 +237,12 @@ AGENT_CONFIG = {
         "folder": ".shai/",
         "install_url": "https://github.com/ovh/shai",
         "requires_cli": True,
+    },
+    "bob": {
+        "name": "IBM Bob",
+        "folder": ".bob/",
+        "install_url": None,  # IDE-based
+        "requires_cli": False,
     },
 }
 
@@ -1014,7 +1026,7 @@ def ensure_executable_scripts(project_path: Path, tracker: StepTracker | None = 
 @app.command()
 def init(
     project_name: str = typer.Argument(None, help="新專案目錄名稱（使用 --here 時可選，或使用 '.' 表示目前目錄）"),
-    ai_assistant: str = typer.Option(None, "--ai", help="使用的 AI 助手：claude, gemini, copilot, cursor-agent, qwen, opencode, codex, windsurf, kilocode, auggie, codebuddy, roo, amp, shai, 或 q"),
+    ai_assistant: str = typer.Option(None, "--ai", help="使用的 AI 助手：claude, gemini, copilot, cursor-agent, qwen, opencode, codex, windsurf, kilocode, auggie, codebuddy, qoder, roo, amp, shai, q, 或 bob"),
     script_type: str = typer.Option(None, "--script", help="使用的腳本類型：sh 或 ps"),
     ignore_agent_tools: bool = typer.Option(False, "--ignore-agent-tools", help="跳過 AI 代理工具檢查（如 Claude Code）"),
     no_git: bool = typer.Option(False, "--no-git", help="跳過 git 儲存庫初始化"),
@@ -1029,7 +1041,7 @@ def init(
 
     此命令將會：
     1. 檢查必要工具是否已安裝（git 為可選）
-    2. 讓你選擇 AI 助手（Claude Code、Gemini CLI、GitHub Copilot、Cursor、Qwen Code、opencode、Codex CLI、Windsurf、Kilo Code、Auggie CLI、CodeBuddy、Roo Code、Amp 或 Amazon Q Developer CLI）
+    2. 讓你選擇 AI 助手（Claude Code、Gemini CLI、GitHub Copilot、Cursor、Qwen Code、opencode、Codex CLI、Windsurf、Kilo Code、Auggie CLI、CodeBuddy、Qoder CLI、Roo Code、Amp、SHAI、Amazon Q Developer CLI 或 IBM Bob）
     3. 從 GitHub 下載適當的模板
     4. 將模板解壓到新專案目錄或目前目錄
     5. 初始化新的 git 儲存庫（如果未使用 --no-git 且不存在儲存庫）
@@ -1047,8 +1059,12 @@ def init(
         specify-tw init my-project --ai windsurf
         specify-tw init my-project --ai auggie
         specify-tw init my-project --ai codebuddy
+        specify-tw init my-project --ai qoder
         specify-tw init my-project --ai roo
+        specify-tw init my-project --ai amp
+        specify-tw init my-project --ai shai
         specify-tw init my-project --ai q
+        specify-tw init my-project --ai bob
         specify-tw init --ignore-agent-tools my-project
         specify-tw init . --ai claude         # 在目前目錄初始化
         specify-tw init .                     # 在目前目錄初始化（互動式選擇 AI）

@@ -5,6 +5,63 @@
 格式基於 [Keep a Changelog](https://keepachangelog.com/zh-TW/1.0.0/)，
 並且本專案遵循[語義化版本](https://semver.org/lang/zh-TW/)。
 
+## [0.0.90] - 2025-12-05
+
+### 同步原版
+- 同步原版 [v0.0.86](https://github.com/github/spec-kit/releases/tag/v0.0.86) 至 [v0.0.90](https://github.com/github/spec-kit/releases/tag/v0.0.90)
+- 跨越 5 個版本：v0.0.86 → v0.0.87 → v0.0.88 → v0.0.89 → v0.0.90
+
+### 新增功能
+
+#### **新增 2 個 AI 助手支援**
+- **Qoder CLI**：
+  - CLI 工具：`qoder`
+  - 配置目錄：`.qoder/commands/`
+  - 安裝位置：https://qoder.dev/cli
+- **IBM Bob**：
+  - 類型：IDE 整合
+  - 配置目錄：`.bob/commands/`
+  - 不需要 CLI 工具
+
+### 修復
+
+#### **分支編號八進制解析問題**
+- **問題**：分支編號如 `008`、`009` 在某些 shell 環境中會被錯誤解析為八進制數字
+- **修復**：使用 `$((10#$BRANCH_NUMBER))` 強制十進制解析
+- **影響腳本**：
+  - `scripts/bash/create-new-feature.sh`
+  - `scripts/powershell/create-new-feature.ps1`
+
+#### **分支編號檢測邏輯改進**
+- **問題**：舊邏輯按 short_name 匹配可能導致編號碰撞
+- **修復**：改為掃描所有分支和 specs 目錄取得全域最高編號
+- **新邏輯**：
+  - `get_highest_from_branches()`：從所有分支取得最高編號
+  - `get_highest_from_specs()`：從 specs 目錄取得最高編號
+  - 取兩者最大值 + 1 作為新編號
+
+### 變更檔案統計
+- **核心檔案**：
+  - `src/specify_cli/__init__.py`：新增 Qoder 和 Bob 到 AGENT_CONFIG
+  - `.github/workflows/scripts/create-release-packages.sh`：新增 qoder 和 bob 打包支援
+  - `scripts/bash/update-agent-context.sh`：新增 qoder 和 bob 支援
+  - `scripts/powershell/update-agent-context.ps1`：新增 qoder 和 bob 支援
+  - `scripts/bash/create-new-feature.sh`：八進制修復 + 分支編號邏輯改進
+  - `scripts/powershell/create-new-feature.ps1`：八進制修復 + 分支編號邏輯改進
+
+### 繁體中文本地化
+- 更新 CLI 介面助手列表（新增 qoder、bob）
+- 更新使用說明文件
+
+### 向後相容性
+- ✅ 所有現有功能保持不變
+- ✅ 舊的腳本呼叫方式仍然有效
+- ✅ 現有的代理配置繼續工作
+- ✅ 18 個 AI 助手全部支援
+
+### 已知問題
+- 無
+
 ## [0.0.85] - 2025-11-18
 
 ### 同步原版
